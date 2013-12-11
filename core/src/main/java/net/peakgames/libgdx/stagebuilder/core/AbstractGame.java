@@ -107,6 +107,11 @@ public abstract class AbstractGame implements ApplicationListener {
         this.topScreen = NULL_SCREEN;
         screens.clear();
     }
+    
+    public void addScreen(Screen screen, Map<String, String> parameters) {
+    	((AbstractScreen) screen).setParameters(parameters);
+    	addScreen(screen);
+    }
 
     public void addScreen(Screen screen) {
         if (screen == null) {
