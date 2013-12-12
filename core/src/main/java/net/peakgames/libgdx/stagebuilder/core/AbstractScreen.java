@@ -2,6 +2,7 @@ package net.peakgames.libgdx.stagebuilder.core;
 
 import java.util.Map;
 
+import com.badlogic.gdx.scenes.scene2d.Group;
 import net.peakgames.libgdx.stagebuilder.core.builder.StageBuilder;
 import net.peakgames.libgdx.stagebuilder.core.util.Utils;
 
@@ -187,5 +188,9 @@ public abstract class AbstractScreen implements Screen {
     	createStage(game);
     	onStageReloaded();
     	
+    }
+
+    public Group getRoot() {
+        return (Group) stage.getRoot().findActor(StageBuilder.ROOT_GROUP_NAME);
     }
 }
