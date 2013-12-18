@@ -80,6 +80,15 @@ public abstract class AbstractScreen implements Screen {
     }
 
     public abstract void unloadAssets();
+
+    /**
+     * Subclasses should override this method if they do not want to reload stage.
+     * @return true if this screen should be notified be reloadStage() when screen is resized. For example when screen orientation changes.
+     */
+    public boolean isReloadable() {
+        return true;
+    }
+
     /**
      * Stage is replaced with a new one, listeners should be updated.
      */
@@ -185,9 +194,10 @@ public abstract class AbstractScreen implements Screen {
     }
     
     private void reloadStage() {
-    	createStage(game);
-    	onStageReloaded();
-    	
+        if (isReloadable()) {
+        	createStage(game);
+        	onStageReloaded();
+        }
     }
 
     public Group getRoot() {
