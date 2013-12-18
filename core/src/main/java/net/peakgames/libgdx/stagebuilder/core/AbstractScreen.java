@@ -85,7 +85,7 @@ public abstract class AbstractScreen implements Screen {
      * Subclasses should override this method if they do not want to reload stage.
      * @return true if this screen should be notified be reloadStage() when screen is resized. For example when screen orientation changes.
      */
-    public boolean isReloadable() {
+    public boolean isResizable() {
         return true;
     }
 
@@ -127,7 +127,11 @@ public abstract class AbstractScreen implements Screen {
 	@Override
     public void resize(int newWidth, int newHeight) {
         Gdx.app.log(TAG, "resize " + newWidth + " x " + newHeight);
-        reloadStage();
+        if (isResizable()) {
+            reloadStage();
+        } else {
+            Gdx.app.log(TAG, "Screen is not resizable.");
+        }
     }
 
     @Override
@@ -192,12 +196,11 @@ public abstract class AbstractScreen implements Screen {
 		FileHandle fileHandle = stageBuilder.getLayoutFile(getFileName());
 		return Utils.calculateMD5(fileHandle.read());		
     }
-    
+
     private void reloadStage() {
-        if (isReloadable()) {
-        	createStage(game);
-        	onStageReloaded();
-        }
+        Gdx.app.log(TAG, "Reloading stage.");
+        createStage(game);
+        onStageReloaded();
     }
 
     public Group getRoot() {
