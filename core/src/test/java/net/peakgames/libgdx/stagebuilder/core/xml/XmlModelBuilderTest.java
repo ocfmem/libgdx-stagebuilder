@@ -160,5 +160,7 @@ public class XmlModelBuilderTest {
         assertEquals(BaseModel.ScreenAlign.left, root.getChildren().get(1).getScreenAlignment());
         assertEquals(BaseModel.ScreenAlign.right, root.getChildren().get(3).getScreenAlignment());
         assertEquals(BaseModel.ScreenAlign.bottom, root.getChildren().get(4).getScreenAlignment());
+
+        assertEquals(BaseModel.Touchable.disabled, root.getChildren().get(2).getTouchable());
     }
 }

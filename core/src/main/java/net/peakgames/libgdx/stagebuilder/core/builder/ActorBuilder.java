@@ -2,6 +2,7 @@ package net.peakgames.libgdx.stagebuilder.core.builder;
 
 import java.util.Comparator;
 
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import net.peakgames.libgdx.stagebuilder.core.assets.AssetsInterface;
 import net.peakgames.libgdx.stagebuilder.core.assets.ResolutionHelper;
 import net.peakgames.libgdx.stagebuilder.core.model.BaseModel;
@@ -92,10 +93,30 @@ public abstract class ActorBuilder {
             actor.setOriginY(model.getOriginY());
         }
 
+
         actor.setName(model.getName());
         Vector2 screenPos = calculateScreenPosition(model.getScreenAlignment(), model);
         if (screenPos != null) {
             actor.setPosition(screenPos.x, screenPos.y);
+        }
+        
+        setTouchable(actor, model);
+    }
+
+    private void setTouchable(Actor actor, BaseModel model) {
+        switch (model.getTouchable()) {
+            case enabled:
+                actor.setTouchable(Touchable.enabled);
+                break;
+            case disabled:
+                actor.setTouchable(Touchable.disabled);
+                break;
+            case childrenOnly:
+                actor.setTouchable(Touchable.childrenOnly);
+                break;
+            default:
+                actor.setTouchable(Touchable.enabled);
+                break;
         }
     }
 
