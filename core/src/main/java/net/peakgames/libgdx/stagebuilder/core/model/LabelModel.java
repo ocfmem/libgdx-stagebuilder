@@ -6,6 +6,7 @@ public class LabelModel extends BaseModel {
     private String fontColor;
     private float fontScale;
     private boolean wrap;
+    private boolean fontAutoScale;
     /**
      * combination of "left, right, top, bottom, center
      */
@@ -79,4 +80,8 @@ public class LabelModel extends BaseModel {
     public void setFontScale(float fontScale) {
         this.fontScale = fontScale;
     }
+
+    public void setFontAutoScale(boolean fontAutoScale) {this.fontAutoScale = fontAutoScale;}
+
+    public boolean isFontAutoScale() {return fontAutoScale;}
 }

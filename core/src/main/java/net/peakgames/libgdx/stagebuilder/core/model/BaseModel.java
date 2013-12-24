@@ -3,6 +3,14 @@ package net.peakgames.libgdx.stagebuilder.core.model;
 
 public abstract class BaseModel {
 
+    public enum ScreenAlign {
+        top, bottom, left, right
+    }
+
+    public enum Touchable {
+        enabled, disabled, childrenOnly
+    }
+
     private String name;
     private float x;
     private float y;
@@ -34,6 +42,13 @@ public abstract class BaseModel {
      * used only if screen alignment is "left"
      */
     private float screenPaddingLeft;
+
+    /**
+     * enabled, disabled, childrenOnly
+     * default value enabled
+     */
+    private Touchable touchable = Touchable.enabled;
+
 
     @Override
     public String toString() {
@@ -220,7 +235,20 @@ public abstract class BaseModel {
         return this.width;
     }
 
-    public enum ScreenAlign {
-        top, bottom, left, right
+    public Touchable getTouchable() {
+        return touchable;
     }
+
+    public void setTouchable(Touchable touchable) {
+        this.touchable = touchable;
+    }
+
+    public void setTouchable(String value) {
+        if (value != null) {
+            this.touchable = Touchable.valueOf(value);
+        }
+    }
+
+
+
 }

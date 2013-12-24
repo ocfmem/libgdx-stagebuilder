@@ -54,6 +54,7 @@ public class StageBuilder {
         builders.put(ExternalGroupModel.class, new ExternalGroupModelBuilder(this.assets, this.resolutionHelper, this.localizationService, this));
         builders.put(SliderModel.class, new SliderBuilder( this.assets, this.resolutionHelper, this.localizationService));
         builders.put(TextFieldModel.class, new TextFieldBuilder(assets, resolutionHelper, localizationService));
+        builders.put(CheckBoxModel.class, new CheckBoxBuilder( assets, resolutionHelper, localizationService));
     }
 
     public Group buildGroup(String fileName) throws Exception {
@@ -85,10 +86,12 @@ public class StageBuilder {
             List<BaseModel> modelList = xmlModelBuilder.buildModels(getLayoutFile(fileName));
             GroupModel groupModel = (GroupModel) modelList.get(0);
             Stage stage = new Stage(width, height, keepAspectRatio);
-            addActorsToStage(stage, groupModel.getChildren());
-            stage.getRoot().setX(resolutionHelper.getGameAreaPosition().x);
-            stage.getRoot().setY(resolutionHelper.getGameAreaPosition().y);
-            stage.getRoot().setName(ROOT_GROUP_NAME);
+            Group rootGroup= new Group();
+            addActorsToStage(rootGroup, groupModel.getChildren());
+            rootGroup.setName(ROOT_GROUP_NAME);
+            rootGroup.setX(resolutionHelper.getGameAreaPosition().x);
+            rootGroup.setY(resolutionHelper.getGameAreaPosition().y);
+            stage.addActor(rootGroup);
             return stage;
         } catch (Exception e) {
             Gdx.app.log(TAG, "Failed to build stage.", e);
@@ -96,10 +99,10 @@ public class StageBuilder {
         return null;
     }
 
-    private void addActorsToStage(Stage stage, List<BaseModel> models) {
+    private void addActorsToStage(Group rootGroup, List<BaseModel> models) {
         for (BaseModel model : models) {
             ActorBuilder builder = builders.get(model.getClass());
-            stage.getRoot().addActor(builder.build(model));
+            rootGroup.addActor(builder.build(model));
         }
     }
 

@@ -2,7 +2,7 @@
 <group>
     <image name="image1" screenAlign="top"/>
     <image name="image2" screenAlign="left"></image>
-    <label name="label1" text="ilkin" fontName="helvetica.fnt" fontColor="DFDFDF" wrap="true" align="center" shadow="true" shadowColor="000000"/>
+    <label name="label1" text="ilkin" fontName="helvetica.fnt" fontColor="DFDFDF" wrap="true" align="center" shadow="true" shadowColor="000000" touchable="disabled"/>
     <button name="button1" screenAlign="right" atlas="test.atlas" frameUp="buttonUp" frameDown="buttonDown" frameDisabled="buttonDisabled" />
     <button name="button2" screenAlign="bottom" textureSrcUp="buttonUpSrc" textureSrcDown="buttonDownSrc" textureSrcDisabled="buttonDisabledSrc" />
     <textbutton name="textbutton1"  screenAlign="TOP"

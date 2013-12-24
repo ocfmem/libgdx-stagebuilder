@@ -2,6 +2,7 @@ package net.peakgames.libgdx.stagebuilder.core;
 
 import java.util.Map;
 
+import com.badlogic.gdx.scenes.scene2d.Group;
 import net.peakgames.libgdx.stagebuilder.core.builder.StageBuilder;
 import net.peakgames.libgdx.stagebuilder.core.util.Utils;
 
@@ -79,6 +80,15 @@ public abstract class AbstractScreen implements Screen {
     }
 
     public abstract void unloadAssets();
+
+    /**
+     * Subclasses should override this method if they do not want to reload stage.
+     * @return true if this screen should be notified be reloadStage() when screen is resized. For example when screen orientation changes.
+     */
+    public boolean isResizable() {
+        return true;
+    }
+
     /**
      * Stage is replaced with a new one, listeners should be updated.
      */
@@ -117,7 +127,11 @@ public abstract class AbstractScreen implements Screen {
 	@Override
     public void resize(int newWidth, int newHeight) {
         Gdx.app.log(TAG, "resize " + newWidth + " x " + newHeight);
-        reloadStage();
+        if (isResizable()) {
+            reloadStage();
+        } else {
+            Gdx.app.log(TAG, "Screen is not resizable.");
+        }
     }
 
     @Override
@@ -182,10 +196,14 @@ public abstract class AbstractScreen implements Screen {
 		FileHandle fileHandle = stageBuilder.getLayoutFile(getFileName());
 		return Utils.calculateMD5(fileHandle.read());		
     }
-    
+
     private void reloadStage() {
-    	createStage(game);
-    	onStageReloaded();
-    	
+        Gdx.app.log(TAG, "Reloading stage.");
+        createStage(game);
+        onStageReloaded();
+    }
+
+    public Group getRoot() {
+        return (Group) stage.getRoot().findActor(StageBuilder.ROOT_GROUP_NAME);
     }
 }
