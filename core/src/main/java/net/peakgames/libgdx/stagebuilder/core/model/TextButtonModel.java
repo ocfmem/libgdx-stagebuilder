@@ -12,6 +12,7 @@ public class TextButtonModel extends ButtonModel {
     private float labelPaddingTop;
     private float labelPaddingBottom;
     private String alignment;
+    private boolean fontAutoScale;
     private boolean wrap;
 
     public String getText() {
@@ -100,5 +101,13 @@ public class TextButtonModel extends ButtonModel {
 
     public void setWrap(boolean wrap) {
         this.wrap = wrap;
+    }
+
+    public boolean isFontAutoScale() {
+        return fontAutoScale;
+    }
+
+    public void setFontAutoScale(boolean fontAutoScale) {
+        this.fontAutoScale = fontAutoScale;
     }
 }

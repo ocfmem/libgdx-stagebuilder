@@ -137,6 +137,7 @@ public class XmlModelBuilder {
         label.setShadow(XmlHelper.readBooleanAttribute(xmlParser, "shadow", false));
         label.setShadowColor(XmlHelper.readStringAttribute(xmlParser, "shadowColor"));
         label.setFontScale(XmlHelper.readFloatAttribute(xmlParser, "fontScale", 1f));
+        label.setFontAutoScale(XmlHelper.readBooleanAttribute(xmlParser, "fontAutoScale", false));
         return label;
     }
 
@@ -251,8 +252,8 @@ public class XmlModelBuilder {
         textButton.setLabelPaddingBottom(XmlHelper.readFloatAttribute(xmlParser, "labelPaddingBottom", 0.0f));
         textButton.setAlignment(XmlHelper.readStringAttribute(xmlParser, "align"));
         textButton.setWrap(XmlHelper.readBooleanAttribute(xmlParser, "align", false));
+        textButton.setFontAutoScale(XmlHelper.readBooleanAttribute(xmlParser, "fontAutoScale", false));
     }
-
 
     private void setBaseModelParameters(BaseModel model, XmlPullParser xmlParser) {
         model.setName(XmlHelper.readStringAttribute(xmlParser, "name"));
