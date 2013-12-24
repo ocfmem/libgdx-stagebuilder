@@ -29,11 +29,21 @@ public class LabelBuilder extends ActorBuilder {
 
         label.setAlignment(calculateAlignment(labelModel.getAlignment()));
         label.setWrap(labelModel.isWrap());
-        if (labelModel.getFontScale() != 1) {
+        if (labelModel.isFontAutoScale()) {
+            autoScaleLabel(label);
+        } else if (labelModel.getFontScale() != 1) {
             label.setFontScale(label.getStyle().font.getScaleX() * labelModel.getFontScale());
         }
-
         return label;
+    }
+
+    private void autoScaleLabel(Label label) {
+        float labelTextWidth = label.getTextBounds().width;
+        float labelWidth = label.getWidth();
+        float scaleDownFactor = labelWidth / labelTextWidth;
+        if (labelTextWidth > labelWidth) {
+            label.setFontScale(label.getFontScaleX() * scaleDownFactor);
+        }
     }
 
 }
