@@ -62,8 +62,9 @@ public class SelectBoxBuilder extends ActorBuilder {
         SelectBox.SelectBoxStyle style = new SelectBox.SelectBoxStyle(font, fontColor, selectBoxBackground, scrollPaneStyle, listStyle);
 
         String[] values = new String[0];
-        if (selectBoxModel.getValue() != null && !selectBoxModel.getValue().isEmpty()) {
-            values = selectBoxModel.getValue().split(DELIMITER);
+        String filterValues =  getLocalizedString(selectBoxModel.getValue());
+        if (selectBoxModel.getValue() != null && !filterValues.isEmpty()) {
+            values = filterValues.split(DELIMITER);
         }
 
         SelectBox selectBox = new SelectBox(values, style);
