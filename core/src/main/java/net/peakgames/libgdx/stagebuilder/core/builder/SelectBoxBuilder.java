@@ -19,8 +19,8 @@ public class SelectBoxBuilder extends ActorBuilder {
 
     public static final Color DEFAULT_COLOR = Color.BLACK;
     public static final String DELIMITER = ";";
-    public static final int DEFAULT_PADDING_LEFT = 5;
-    public static final int DEFAULT_PADDING_RIGHT = 5;
+    public static int DEFAULT_PADDING_LEFT = 5;
+    public static int DEFAULT_PADDING_RIGHT = 5;
 
     public SelectBoxBuilder(AssetsInterface assets, ResolutionHelper resolutionHelper, LocalizationService localizationService) {
         super(assets, resolutionHelper, localizationService);
@@ -28,7 +28,13 @@ public class SelectBoxBuilder extends ActorBuilder {
 
     @Override
     public Actor build(BaseModel model) {
+        float positionMultiplier = resolutionHelper.getPositionMultiplier();
+        DEFAULT_PADDING_RIGHT = (int) (DEFAULT_PADDING_RIGHT * positionMultiplier);
+        DEFAULT_PADDING_LEFT = (int) (DEFAULT_PADDING_LEFT * positionMultiplier);
+
         SelectBoxModel selectBoxModel = (SelectBoxModel)model;
+        selectBoxModel.setPaddingLeft((int) (selectBoxModel.getPaddingLeft() * positionMultiplier));
+        selectBoxModel.setPaddingRight((int) (selectBoxModel.getPaddingRight() * positionMultiplier));
 
         TextureAtlas textureAtlas = assets.getTextureAtlas(selectBoxModel.getAtlasName());
 
@@ -42,7 +48,8 @@ public class SelectBoxBuilder extends ActorBuilder {
         TextureRegionDrawable selectBoxBackground = new TextureRegionDrawable(textureAtlas.findRegion(selectBoxModel.getSelectionBackground()));
 
         NinePatchDrawable drawable = new NinePatchDrawable();
-        NinePatch n = new NinePatch(textureAtlas.findRegion(selectBoxModel.getBackground()), 17, 17, 17, 17);
+        int patchSize = (int) (positionMultiplier * 17);
+        NinePatch n = new NinePatch(textureAtlas.findRegion(selectBoxModel.getBackground()), patchSize, patchSize, patchSize, patchSize);
         drawable.setPatch(n);
         ScrollPane.ScrollPaneStyle scrollPaneStyle = new ScrollPane.ScrollPaneStyle(drawable, hScroll, hScrollKnob, vScroll, vScrollKnob);
 
@@ -53,8 +60,8 @@ public class SelectBoxBuilder extends ActorBuilder {
 
         selection.setLeftWidth(selectBoxModel.getPaddingLeft()==0 ? DEFAULT_PADDING_LEFT : selectBoxModel.getPaddingLeft());
         selection.setRightWidth(selectBoxModel.getPaddingRight()==0 ? DEFAULT_PADDING_RIGHT : selectBoxModel.getPaddingRight());
-        selection.setTopHeight(5);
-        selection.setBottomHeight(5);
+        selection.setTopHeight(5 * positionMultiplier);
+        selection.setBottomHeight(5 * positionMultiplier);
         com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle listStyle = new com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle(font, fontColorSelected, fontColorUnselected, selection);
 
         selectBoxBackground.setLeftWidth(selectBoxModel.getPaddingLeft());
