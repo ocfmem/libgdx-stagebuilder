@@ -42,7 +42,7 @@ public class LabelBuilder extends ActorBuilder {
         float labelWidth = label.getWidth();
         float scaleDownFactor = labelWidth / labelTextWidth;
         if (labelTextWidth > labelWidth) {
-            label.setFontScale(label.getFontScaleX() * scaleDownFactor);
+            label.setFontScale(label.getStyle().font.getScaleX() * scaleDownFactor);
         }
     }
 

@@ -75,7 +75,7 @@ public class TextButtonBuilder extends ButtonBuilder {
         float labelWidth = label.getWidth();
         if (labelWidth > textButtonWidth) {
             float scaleDownFactor = textButtonWidth / labelWidth;
-            label.setFontScale(label.getFontScaleX() * scaleDownFactor);
+            label.setFontScale(label.getStyle().font.getScaleX() * scaleDownFactor);
             label.setWidth(label.getWidth() * scaleDownFactor);
         }
     }
