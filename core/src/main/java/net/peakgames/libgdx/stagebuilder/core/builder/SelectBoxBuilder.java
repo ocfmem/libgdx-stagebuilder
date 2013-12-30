@@ -48,7 +48,8 @@ public class SelectBoxBuilder extends ActorBuilder {
         TextureRegionDrawable selectBoxBackground = new TextureRegionDrawable(textureAtlas.findRegion(selectBoxModel.getSelectionBackground()));
 
         NinePatchDrawable drawable = new NinePatchDrawable();
-        int patchSize = (int) (positionMultiplier * 17);
+        int patchSize = calculatePatchSize(positionMultiplier, selectBoxModel, selectBoxBackground);
+
         NinePatch n = new NinePatch(textureAtlas.findRegion(selectBoxModel.getBackground()), patchSize, patchSize, patchSize, patchSize);
         drawable.setPatch(n);
         ScrollPane.ScrollPaneStyle scrollPaneStyle = new ScrollPane.ScrollPaneStyle(drawable, hScroll, hScrollKnob, vScroll, vScrollKnob);
@@ -83,6 +84,23 @@ public class SelectBoxBuilder extends ActorBuilder {
         setBasicProperties(selectBoxModel, selectBox);
 
         return selectBox;
+    }
+
+    /**
+     * TODO Bu metod icinde sadece height kontrolu yapiliyor.
+     * bottom ve top patch toplami nine-patch resminin yuksekliginden buyuk ise
+     * patch size yuksekligi gecmeyecek sekilde guncelleniyor.
+     * @param positionMultiplier
+     * @param selectBoxModel
+     * @param selectBoxBackground
+     * @return patch size
+     */
+    private int calculatePatchSize(float positionMultiplier, SelectBoxModel selectBoxModel, TextureRegionDrawable selectBoxBackground) {
+        int patchSize = (int) (positionMultiplier * selectBoxModel.getPatchSize());
+        if (patchSize > (selectBoxBackground.getMinHeight() /2f)) {
+            patchSize = (int) (selectBoxBackground.getMinHeight() /2f) - 2 ;
+        }
+        return patchSize;
     }
 
 }
