@@ -17,6 +17,7 @@ public class SelectBoxModel extends BaseModel {
     private int paddingLeft;
     private int paddingRight;
     private int patchSize;
+    private int maxTextWidth;
 
     public String getValue() {
         return value;
@@ -120,5 +121,13 @@ public class SelectBoxModel extends BaseModel {
 
     public void setPatchSize(int patchSize) {
         this.patchSize = patchSize;
+    }
+
+    public int getMaxTextWidth() {
+        return maxTextWidth;
+    }
+
+    public void setMaxTextWidth(int maxTextWidth) {
+        this.maxTextWidth = maxTextWidth;
     }
 }

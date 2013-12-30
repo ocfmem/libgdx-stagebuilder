@@ -60,20 +60,25 @@ public class SelectBoxBuilder extends ActorBuilder {
         Color fontColorUnselected = selectBoxModel.getFontColorUnselected()==null ? DEFAULT_COLOR : Color.valueOf(selectBoxModel.getFontColorUnselected());
 
         selection.setLeftWidth(selectBoxModel.getPaddingLeft()==0 ? DEFAULT_PADDING_LEFT : selectBoxModel.getPaddingLeft());
-        selection.setRightWidth(selectBoxModel.getPaddingRight()==0 ? DEFAULT_PADDING_RIGHT : selectBoxModel.getPaddingRight());
+        selection.setRightWidth(selectBoxModel.getPaddingRight() == 0 ? DEFAULT_PADDING_RIGHT : selectBoxModel.getPaddingRight());
         selection.setTopHeight(5 * positionMultiplier);
         selection.setBottomHeight(5 * positionMultiplier);
-        com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle listStyle = new com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle(font, fontColorSelected, fontColorUnselected, selection);
-
-        selectBoxBackground.setLeftWidth(selectBoxModel.getPaddingLeft());
-        selectBoxBackground.setRightWidth(selectBoxModel.getPaddingRight());
-        SelectBox.SelectBoxStyle style = new SelectBox.SelectBoxStyle(font, fontColor, selectBoxBackground, scrollPaneStyle, listStyle);
 
         String[] values = new String[0];
         String filterValues =  getLocalizedString(selectBoxModel.getValue());
         if (selectBoxModel.getValue() != null && !filterValues.isEmpty()) {
             values = filterValues.split(DELIMITER);
         }
+        
+        autoScaleFont(font, values, selectBoxModel.getMaxTextWidth() * positionMultiplier);
+
+        com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle listStyle = new com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle(font, fontColorSelected, fontColorUnselected, selection);
+
+        selectBoxBackground.setLeftWidth(selectBoxModel.getPaddingLeft());
+        selectBoxBackground.setRightWidth(selectBoxModel.getPaddingRight());
+        SelectBox.SelectBoxStyle style = new SelectBox.SelectBoxStyle(font, fontColor, selectBoxBackground, scrollPaneStyle, listStyle);
+
+
 
         SelectBox selectBox = new SelectBox(values, style);
         selectBox.setName(selectBoxModel.getName());
@@ -84,6 +89,22 @@ public class SelectBoxBuilder extends ActorBuilder {
         setBasicProperties(selectBoxModel, selectBox);
 
         return selectBox;
+    }
+
+    private void autoScaleFont(BitmapFont font, String[] values, float maxWidth) {
+        if (maxWidth <= 0) {
+            return;
+        }
+        float max = 0;
+        for (String value : values) {
+            float textWidth = font.getBounds(value).width;
+            if (textWidth > max) {
+                max = textWidth;
+            }
+        }
+        if (max > maxWidth) {
+            font.setScale(font.getScaleX() * (maxWidth/max));
+        }
     }
 
     /**

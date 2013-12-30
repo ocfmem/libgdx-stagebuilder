@@ -157,6 +157,7 @@ public class XmlModelBuilder {
         selectBoxModel.setPaddingLeft(XmlHelper.readIntAttribute(xmlParser, "paddingLeft", 1));
         selectBoxModel.setPaddingRight(XmlHelper.readIntAttribute(xmlParser, "paddingRight", 1));
         selectBoxModel.setPatchSize(XmlHelper.readIntAttribute(xmlParser, "patchSize", 1));
+        selectBoxModel.setMaxTextWidth(XmlHelper.readIntAttribute(xmlParser, "maxTextWidth", 0));
         return selectBoxModel;
     }
 
