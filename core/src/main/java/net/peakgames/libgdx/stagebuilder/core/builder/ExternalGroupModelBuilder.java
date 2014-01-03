@@ -2,6 +2,7 @@ package net.peakgames.libgdx.stagebuilder.core.builder;
 
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import net.peakgames.libgdx.stagebuilder.core.assets.AssetsInterface;
@@ -34,6 +35,13 @@ public class ExternalGroupModelBuilder extends ActorBuilder {
 
     private void updateGroupProperties( ExternalGroupModel model, Group group){
         group.setName( model.getName());
-        group.setPosition( model.getX() * resolutionHelper.getPositionMultiplier(), model.getY() * resolutionHelper.getPositionMultiplier());
+        model.setWidth( group.getWidth());
+        model.setHeight( group.getHeight());
+        Vector2 screenPos = calculateScreenPosition(model.getScreenAlignment(), model);
+        if(screenPos != null){
+            group.setPosition(screenPos.x, screenPos.y);
+        }else{
+            group.setPosition(model.getX() * resolutionHelper.getPositionMultiplier(), model.getY() * resolutionHelper.getPositionMultiplier());
+        }
     }
 }
