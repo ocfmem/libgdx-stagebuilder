@@ -29,15 +29,18 @@ public class AndroidKeyboardEventService implements SoftKeyboardEventInterface{
 				int screenHeight = root.getRootView().getHeight();
 				int visibleAreaHeight = visibleAreaRectangle.bottom - visibleAreaRectangle.top;
 				heightDifference = screenHeight - visibleAreaHeight;
-				Log.d("<<", "keyboard check " + screenHeight + " " + visibleAreaHeight + " " + heightDifference );
+				/**
+				 * Added a delay before sending the events. On some devices, this is called three times while
+				 * openning the keyboard, it fires three events: open close open. This causes some glitches.
+				 * It waits 200ms before sending the event (each events resets cooldown) and sends the final state
+				 * of the keyboard state
+				 */
 				if (heightDifference > MIN_KEYBOARD_HEIGHT) {
-					Log.d("<<", "open");
 					//softKeyboardEventListener.softKeyboardOpened(heightDifference);
 					keyboardVisible = true;
 					eventSenderTask.cancel();
 					Timer.schedule(eventSenderTask, 0.2f);
 				} else {
-					Log.d("<<", "close");
 					//softKeyboardEventListener.softKeyboardClosed(heightDifference);
 					keyboardVisible = false;
 					eventSenderTask.cancel();
