@@ -71,7 +71,7 @@ public abstract class AbstractScreen implements Screen {
         this.stage.setViewport(width, height, keepAspectRatio);
         Gdx.input.setInputProcessor(stage);
 
-        spriteBatch = stage.getSpriteBatch();
+        spriteBatch = (SpriteBatch)stage.getSpriteBatch();
         spriteBatch.setProjectionMatrix(camera.combined);
     }
 
