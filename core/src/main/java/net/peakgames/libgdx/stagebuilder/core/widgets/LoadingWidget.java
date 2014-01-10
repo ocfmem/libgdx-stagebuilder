@@ -1,11 +1,9 @@
 package net.peakgames.libgdx.stagebuilder.core.widgets;
 
-import java.util.Map;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -15,11 +13,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
-
 import net.peakgames.libgdx.stagebuilder.core.ICustomWidget;
 import net.peakgames.libgdx.stagebuilder.core.assets.AssetsInterface;
 import net.peakgames.libgdx.stagebuilder.core.assets.ResolutionHelper;
 import net.peakgames.libgdx.stagebuilder.core.services.LocalizationService;
+
+import java.util.Map;
 
 public class LoadingWidget extends WidgetGroup implements ICustomWidget{
 	
@@ -141,7 +140,7 @@ public class LoadingWidget extends WidgetGroup implements ICustomWidget{
 	}
 	
 	@Override
-	public void draw (SpriteBatch batch, float parentAlpha) {
+	public void draw (Batch batch, float parentAlpha) {
 		super.draw(batch, parentAlpha);
 		foregroundImage.rotate(5);
 		if(fullScreen) {
