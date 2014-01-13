@@ -34,7 +34,11 @@ public class TextFieldBuilder extends ActorBuilder{
         NinePatchDrawable cursor = createNinePatchDrawable(textFieldModel.getCursorImageName(), textureAtlas, textFieldModel.getCursorOffset());
         cursor.getPatch().setColor(fontColor);
         NinePatchDrawable selection = createNinePatchDrawable(textFieldModel.getSelectionImageName(), textureAtlas, textFieldModel.getSelectionOffset());
-        NinePatchDrawable background = createNinePatchDrawable(textFieldModel.getBackgroundImageName(), textureAtlas, textFieldModel.getBackGroundOffset());
+        NinePatchDrawable background = null;
+
+        if(textFieldModel.getBackgroundImageName() != null){
+            background = createNinePatchDrawable(textFieldModel.getBackgroundImageName(), textureAtlas, textFieldModel.getBackGroundOffset());
+        }
         
         TextFieldStyle textFieldStyle = new TextFieldStyle(font, fontColor, cursor, selection, background);
         TextField textField = new TextField(getLocalizedString(textFieldModel.getText()), textFieldStyle);

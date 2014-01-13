@@ -123,6 +123,8 @@ public class XmlModelBuilder {
         image.setFrame(XmlHelper.readStringAttribute(xmlParser, "frame"));
         image.setTextureSrc(XmlHelper.readStringAttribute(xmlParser, "src"));
         image.setType(XmlHelper.readStringAttribute(xmlParser, "type"));
+        image.setNinepatch(XmlHelper.readBooleanAttribute(xmlParser, "ninepatch", false));
+        image.setNinepatchOffset(XmlHelper.readIntAttribute(xmlParser, "ninepatchOffset", 0));
         return image;
     }
 
