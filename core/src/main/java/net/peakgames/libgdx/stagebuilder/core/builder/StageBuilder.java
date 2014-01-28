@@ -54,6 +54,7 @@ public class StageBuilder {
         builders.put(ExternalGroupModel.class, new ExternalGroupModelBuilder(this.assets, this.resolutionHelper, this.localizationService, this));
         builders.put(SliderModel.class, new SliderBuilder( this.assets, this.resolutionHelper, this.localizationService));
         builders.put(TextFieldModel.class, new TextFieldBuilder(assets, resolutionHelper, localizationService));
+        builders.put(TextAreaModel.class, new TextAreaBuilder(assets, resolutionHelper, localizationService));
         builders.put(CheckBoxModel.class, new CheckBoxBuilder( assets, resolutionHelper, localizationService));
     }
 

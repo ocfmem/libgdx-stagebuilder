@@ -66,7 +66,10 @@ public abstract class ActorBuilder {
                 model.getY() * resolutionHelper.getPositionMultiplier(),
                 model.getWidth(),
                 model.getHeight());
-        
+
+        actor.setWidth(model.getWidth());
+        actor.setHeight(model.getHeight());
+
         if (model.getScale() != 1) {
             actor.setScale(model.getScale(), model.getScale());
         } else {

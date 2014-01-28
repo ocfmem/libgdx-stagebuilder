@@ -19,6 +19,7 @@ public class XmlModelBuilder {
     public static final String GROUP_TAG = "Group";
     public static final String SLIDER_TAG = "Slider";
     public static final String TEXT_FIELD_TAG = "TextField";
+    public static final String TEXT_AREA_TAG = "TextArea";
     public static final String CHECKBOX_TAG = "CheckBox";
     public static final String LOCALIZED_STRING_PREFIX = "@string/";
 
@@ -64,6 +65,8 @@ public class XmlModelBuilder {
             model = buildTextButtonModel(xmlParser);
         } else if (TEXT_FIELD_TAG.equalsIgnoreCase(tagName)) {
             model = buildTextFieldModel(xmlParser);
+        } else if (TEXT_AREA_TAG.equalsIgnoreCase(tagName)) {
+            model = buildTextAreaModel(xmlParser);
         } else if (LABEL_TAG.equalsIgnoreCase(tagName)) {
             model = buildLabelModel(xmlParser);
         } else if (SELECT_BOX_TAG.equalsIgnoreCase(tagName)) {
@@ -215,7 +218,26 @@ public class XmlModelBuilder {
     	textFieldModel.setFontColor(XmlHelper.readStringAttribute(xmlParser, "fontColor"));
     	textFieldModel.setPassword(XmlHelper.readBooleanAttribute(xmlParser, "password", false));
     	textFieldModel.setPasswordChar(XmlHelper.readStringAttribute(xmlParser, "passwordChar", "*"));
+        textFieldModel.setHint(XmlHelper.readStringAttribute(xmlParser, "hint"));
     	return textFieldModel;
+    }
+    private BaseModel buildTextAreaModel(XmlPullParser xmlParser) {
+        TextAreaModel textAreaModel = new TextAreaModel();
+        setBaseModelParameters(textAreaModel, xmlParser);
+        textAreaModel.setAtlasName( XmlHelper.readStringAttribute( xmlParser, "atlas"));
+        textAreaModel.setText(XmlHelper.readStringAttribute(xmlParser, "text"));
+        textAreaModel.setBackgroundImageName(XmlHelper.readStringAttribute(xmlParser, "backgroundImage"));
+        textAreaModel.setSelectionImageName(XmlHelper.readStringAttribute(xmlParser, "selectionImage"));
+        textAreaModel.setCursorImageName(XmlHelper.readStringAttribute(xmlParser, "cursorImage"));
+        textAreaModel.setBackGroundOffset(XmlHelper.readIntAttribute(xmlParser, "backgroundOffset", 0));
+        textAreaModel.setSelectionOffset(XmlHelper.readIntAttribute(xmlParser, "selectionOffset", 0));
+        textAreaModel.setCursorOffset(XmlHelper.readIntAttribute(xmlParser, "cursorOffset", 0));
+        textAreaModel.setFontName(XmlHelper.readStringAttribute(xmlParser, "fontName"));
+        textAreaModel.setFontColor(XmlHelper.readStringAttribute(xmlParser, "fontColor"));
+        textAreaModel.setPassword(XmlHelper.readBooleanAttribute(xmlParser, "password", false));
+        textAreaModel.setPasswordChar(XmlHelper.readStringAttribute(xmlParser, "passwordChar", "*"));
+        textAreaModel.setHint(XmlHelper.readStringAttribute(xmlParser, "hint"));
+        return textAreaModel;
     }
 
     private BaseModel buildTextButtonModel(XmlPullParser xmlParser) {
