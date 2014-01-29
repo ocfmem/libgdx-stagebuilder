@@ -4,6 +4,7 @@ import com.badlogic.gdx.files.FileHandle;
 
 import net.peakgames.libgdx.stagebuilder.core.model.*;
 
+import net.peakgames.libgdx.stagebuilder.core.widgets.ToggleWidget;
 import org.xmlpull.v1.XmlPullParser;
 
 import java.util.LinkedList;
@@ -21,6 +22,7 @@ public class XmlModelBuilder {
     public static final String TEXT_FIELD_TAG = "TextField";
     public static final String TEXT_AREA_TAG = "TextArea";
     public static final String CHECKBOX_TAG = "CheckBox";
+    public static final String TOGGLE_WIDGET_TAG = "ToggleWidget";
     public static final String LOCALIZED_STRING_PREFIX = "@string/";
 
     public List<BaseModel> buildModels(FileHandle fileHandle) throws Exception {
@@ -77,6 +79,8 @@ public class XmlModelBuilder {
             model = buildGroupModel(xmlParser);
         } else if ( CHECKBOX_TAG.equalsIgnoreCase( tagName)){
             model = buildCheckBoxModel( xmlParser);
+        } else if ( TOGGLE_WIDGET_TAG.equalsIgnoreCase(tagName)){
+            model = buildToggleWidgetModel(xmlParser);
         } else if (isCustomWidget(tagName)) {
             model = buildCustomWidget(xmlParser, tagName);
         } else{
@@ -251,10 +255,23 @@ public class XmlModelBuilder {
     private BaseModel buildCheckBoxModel( XmlPullParser xmlPullParser){
         CheckBoxModel checkBoxModel = new CheckBoxModel();
         setBaseModelParameters( checkBoxModel, xmlPullParser);
-        setButtonModelProperties( checkBoxModel, xmlPullParser);
-        setTextButtonModelProperties( checkBoxModel, xmlPullParser);
-        setCheckBoxModelProperties( checkBoxModel, xmlPullParser);
+        setButtonModelProperties(checkBoxModel, xmlPullParser);
+        setTextButtonModelProperties(checkBoxModel, xmlPullParser);
+        setCheckBoxModelProperties(checkBoxModel, xmlPullParser);
         return checkBoxModel;
+    }
+
+    private BaseModel buildToggleWidgetModel( XmlPullParser xmlPullParser){
+        ToggleWidgetModel toggleWidgetModel = new ToggleWidgetModel();
+        setBaseModelParameters(toggleWidgetModel, xmlPullParser);
+
+        toggleWidgetModel.setInitialToggle(XmlHelper.readStringAttribute(xmlPullParser, "initialToggle", "left"));
+        toggleWidgetModel.setAtlasName(XmlHelper.readStringAttribute(xmlPullParser, "atlas", null));
+        toggleWidgetModel.setButtonImageName(XmlHelper.readStringAttribute(xmlPullParser, "buttonImageName", null));
+        toggleWidgetModel.setBackgroundImageName(XmlHelper.readStringAttribute(xmlPullParser, "backgroundImageName", "left"));
+        toggleWidgetModel.setToggleButtonPadding(XmlHelper.readFloatAttribute(xmlPullParser, "toggleButtonPadding", 1.0f));
+
+        return toggleWidgetModel;
     }
 
     private void setCheckBoxModelProperties(CheckBoxModel checkBoxModel, XmlPullParser xmlPullParser) {
