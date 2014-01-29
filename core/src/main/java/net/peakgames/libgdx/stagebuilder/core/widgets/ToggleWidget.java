@@ -5,22 +5,15 @@ package net.peakgames.libgdx.stagebuilder.core.widgets;
  * Created by Engin Mercan on 29.01.2014.
  */
 
-
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import net.peakgames.libgdx.stagebuilder.core.ICustomWidget;
-import net.peakgames.libgdx.stagebuilder.core.assets.AssetsInterface;
-import net.peakgames.libgdx.stagebuilder.core.assets.ResolutionHelper;
-import net.peakgames.libgdx.stagebuilder.core.model.ToggleWidgetModel;
-import net.peakgames.libgdx.stagebuilder.core.services.LocalizationService;
-import java.util.Map;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
 public class ToggleWidget extends WidgetGroup {
     private static final float ANIMATE_SPEED = 500.0f;
 
-    private AssetsInterface assets;
     private Image background;
     private Image toggleButton;
 
@@ -30,30 +23,16 @@ public class ToggleWidget extends WidgetGroup {
     private float maxButtonX;
     private float minButtonX;
     private boolean animating = false;
-    private TogleListener toggleListener;
+    private ToggleListener toggleListener;
     private boolean pressed = false;
 
-    public ToggleWidget(ToggleWidgetModel toggleWidgetModel, AssetsInterface assets, ResolutionHelper resolutionHelper) {
-
-        this.assets = assets;
-        String atlasName = toggleWidgetModel.getAtlasName();
-
-        float sizeMultiplier = resolutionHelper.getSizeMultiplier();
-
-        String toggleBG = toggleWidgetModel.getBackgroundImageName();
-        String toggleButtonImage = toggleWidgetModel.getButtonImageName();
-        background = new Image(assets.getTextureAtlas(atlasName).findRegion(toggleBG));
+    public ToggleWidget(ToggleWidgetStyle style) {
+        background = new Image(style.backgroundDrawable);
         addActor(background);
-        background.setWidth(background.getWidth() * sizeMultiplier);
-        background.setHeight(background.getHeight() * sizeMultiplier);
 
-        toggleButton = new Image(assets.getTextureAtlas(atlasName).findRegion(toggleButtonImage));
+
+        toggleButton = new Image(style.toggleButtonDrawable);
         addActor(toggleButton);
-        toggleButton.setWidth(toggleButton.getWidth() * sizeMultiplier);
-        toggleButton.setHeight(toggleButton.getHeight() * sizeMultiplier);
-
-        float positionMultiplier = resolutionHelper.getPositionMultiplier();
-        setPosition(Float.valueOf(toggleWidgetModel.getX()) * positionMultiplier, Float.valueOf(getY()) * positionMultiplier);
 
         float width = background.getWidth();
         float height = Math.max(toggleButton.getHeight(), background.getHeight());
@@ -67,9 +46,8 @@ public class ToggleWidget extends WidgetGroup {
         maxButtonX = getWidth() - toggleButton.getWidth();
         minButtonX = 0;
 
-        float padding = toggleWidgetModel.getToggleButtonPadding();
-        minButtonX += padding/2;
-        maxButtonX -= padding/2;
+        minButtonX += style.toggleButtonPadding/2;
+        maxButtonX -= style.toggleButtonPadding/2;
 
         isLeft = true;
         toggleButton.setX(minButtonX);
@@ -98,7 +76,7 @@ public class ToggleWidget extends WidgetGroup {
     }
 
 
-    public void setTogleListener(TogleListener toggleListener) {
+    public void setToggleListener(ToggleListener toggleListener) {
         this.toggleListener = toggleListener;
     }
 
@@ -142,7 +120,7 @@ public class ToggleWidget extends WidgetGroup {
 
         public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
             if(pressed){
-                boolean newIsLeft = toggleButton.getX() + toggleButton.getWidth()/2 < getWidth()/2;
+                boolean newIsLeft = toggleButton.getX() + toggleButton.getWidth()/2 < background.getWidth()/2;
                 if(toggleListener != null && isLeft != newIsLeft){
                     toggleListener.widgetToggled(newIsLeft);
                 }
@@ -191,9 +169,15 @@ public class ToggleWidget extends WidgetGroup {
             }
         }
     }
-    public interface TogleListener{
+    public interface ToggleListener{
         public void widgetToggled(boolean isLeft);
     }
 
+
+    public static class ToggleWidgetStyle{
+        public Drawable backgroundDrawable;
+        public Drawable toggleButtonDrawable;
+        public float toggleButtonPadding;
+    }
 }
 

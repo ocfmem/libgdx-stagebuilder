@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
@@ -27,7 +28,20 @@ public class ToggleWidgetBuilder extends ActorBuilder{
     public Actor build(BaseModel model) {
         ToggleWidgetModel toggleWidgetModel = (ToggleWidgetModel)model;
 
-        ToggleWidget toggleWidget = new ToggleWidget(toggleWidgetModel, assets, resolutionHelper);
+        ToggleWidget.ToggleWidgetStyle toggleWidgetStyle = new ToggleWidget.ToggleWidgetStyle();
+        toggleWidgetStyle.toggleButtonPadding = toggleWidgetModel.getToggleButtonPadding();
+
+
+        toggleWidgetStyle.backgroundDrawable = new TextureRegionDrawable(assets.getTextureAtlas(toggleWidgetModel.getAtlasName()).findRegion(toggleWidgetModel.getBackgroundImageName()));
+        toggleWidgetStyle.backgroundDrawable.setMinWidth( toggleWidgetStyle.backgroundDrawable.getMinWidth() * resolutionHelper.getSizeMultiplier());
+        toggleWidgetStyle.backgroundDrawable.setMinHeight(toggleWidgetStyle.backgroundDrawable.getMinHeight() * resolutionHelper.getSizeMultiplier());
+ 
+        toggleWidgetStyle.toggleButtonDrawable = new TextureRegionDrawable(assets.getTextureAtlas(toggleWidgetModel.getAtlasName()).findRegion(toggleWidgetModel.getButtonImageName()));
+        toggleWidgetStyle.toggleButtonDrawable.setMinWidth( toggleWidgetStyle.toggleButtonDrawable.getMinWidth() * resolutionHelper.getSizeMultiplier());
+        toggleWidgetStyle.toggleButtonDrawable.setMinHeight( toggleWidgetStyle.toggleButtonDrawable.getMinHeight() * resolutionHelper.getSizeMultiplier());
+
+
+        ToggleWidget toggleWidget = new ToggleWidget(toggleWidgetStyle);
 
         String initialToggle = toggleWidgetModel.getInitialToggle();
         if(initialToggle != null){
@@ -39,6 +53,9 @@ public class ToggleWidgetBuilder extends ActorBuilder{
                 //wrong argument
             }
         }
+
+        normalizeModelSize(model, model.getWidth(), model.getHeight());
+        setBasicProperties(model, toggleWidget);
 
         return toggleWidget;
     }
