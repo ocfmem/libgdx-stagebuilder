@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+import com.badlogic.gdx.utils.Logger;
 import net.peakgames.libgdx.stagebuilder.core.assets.Assets;
 import net.peakgames.libgdx.stagebuilder.core.assets.AssetsInterface;
 import net.peakgames.libgdx.stagebuilder.core.assets.ResolutionHelper;
@@ -229,6 +230,12 @@ public abstract class AbstractGame implements ApplicationListener {
 		@Override
 		public void onStageReloaded() {
 		}
+
+        @Override
+        public void render(float delta) {
+            //override AbstractScreen render. There is nothing to render here.
+            Gdx.app.log("AbstractGame", "Trying to render NullScreen.");
+        }
     }
 
 	public KeyboardManager getKeyboardManager() {

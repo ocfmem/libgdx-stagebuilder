@@ -95,9 +95,8 @@ public class StageBuilder {
             stage.addActor(rootGroup);
             return stage;
         } catch (Exception e) {
-            Gdx.app.log(TAG, "Failed to build stage.", e);
-        }
-        return null;
+            throw new RuntimeException("Failed to build stage.", e);
+       }
     }
 
     private void addActorsToStage(Group rootGroup, List<BaseModel> models) {
