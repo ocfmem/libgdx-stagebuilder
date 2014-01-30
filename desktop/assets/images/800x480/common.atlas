@@ -16,6 +16,13 @@ cancel_button
   orig: 128, 128
   offset: 0, 0
   index: -1
+toggle_background
+  rotate: false
+  xy: 608, 522
+  size: 158, 50
+  orig: 158, 50
+  offset: 0, 0
+  index: -1
 loading_circle_background
   rotate: false
   xy: 2, 845
@@ -95,9 +102,16 @@ accept_button
   index: -1
 back_button
   rotate: false
-  xy: 458, 845
+  xy: 262, 574
   size: 55, 53
   orig: 55, 53
+  offset: 0, 0
+  index: -1
+toggle_handle
+  rotate: false
+  xy: 262, 522
+  size: 76, 48
+  orig: 76, 48
   offset: 0, 0
   index: -1
 cursor
@@ -116,7 +130,7 @@ instagram_logo
   index: -1
 black_square
   rotate: false
-  xy: 515, 845
+  xy: 340, 484
   size: 44, 44
   orig: 44, 44
   offset: 0, 0
