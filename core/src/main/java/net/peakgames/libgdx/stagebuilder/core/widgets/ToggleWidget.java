@@ -25,8 +25,9 @@ public class ToggleWidget extends WidgetGroup {
     private boolean animating = false;
     private ToggleListener toggleListener;
     private boolean pressed = false;
-
+    private ToggleWidgetStyle style;
     public ToggleWidget(ToggleWidgetStyle style) {
+        this.style = style;
         background = new Image(style.backgroundDrawable);
         addActor(background);
 
@@ -41,6 +42,8 @@ public class ToggleWidget extends WidgetGroup {
         setHeight(height);
 
         background.setY((getHeight()-background.getHeight())/2);
+        toggleButton.setY((getHeight()-toggleButton.getHeight())/2);
+
         addListener(new ToggleWidgetClickListener());
 
         maxButtonX = getWidth() - toggleButton.getWidth();
@@ -97,6 +100,7 @@ public class ToggleWidget extends WidgetGroup {
                 pressed = true;
                 downX = x;
                 downButtonX = toggleButton.getX();
+                toggleButton.setDrawable(style.toggleButtonDownDrawable);
             }else{
                 if(isLeft){
                     toggleToRightAnimated();
@@ -127,6 +131,7 @@ public class ToggleWidget extends WidgetGroup {
                 isLeft = newIsLeft;
                 animating = true;
                 pressed = false;
+                toggleButton.setDrawable(style.toggleButtonDrawable);
             }
             super.touchUp(event, x, y, pointer, button);
         }
@@ -177,6 +182,7 @@ public class ToggleWidget extends WidgetGroup {
     public static class ToggleWidgetStyle{
         public Drawable backgroundDrawable;
         public Drawable toggleButtonDrawable;
+        public Drawable toggleButtonDownDrawable;
         public float toggleButtonPadding;
     }
 }

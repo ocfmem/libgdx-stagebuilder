@@ -31,7 +31,6 @@ public class ToggleWidgetBuilder extends ActorBuilder{
         ToggleWidget.ToggleWidgetStyle toggleWidgetStyle = new ToggleWidget.ToggleWidgetStyle();
         toggleWidgetStyle.toggleButtonPadding = toggleWidgetModel.getToggleButtonPadding();
 
-
         toggleWidgetStyle.backgroundDrawable = new TextureRegionDrawable(assets.getTextureAtlas(toggleWidgetModel.getAtlasName()).findRegion(toggleWidgetModel.getBackgroundImageName()));
         toggleWidgetStyle.backgroundDrawable.setMinWidth( toggleWidgetStyle.backgroundDrawable.getMinWidth() * resolutionHelper.getSizeMultiplier());
         toggleWidgetStyle.backgroundDrawable.setMinHeight(toggleWidgetStyle.backgroundDrawable.getMinHeight() * resolutionHelper.getSizeMultiplier());
@@ -40,6 +39,13 @@ public class ToggleWidgetBuilder extends ActorBuilder{
         toggleWidgetStyle.toggleButtonDrawable.setMinWidth( toggleWidgetStyle.toggleButtonDrawable.getMinWidth() * resolutionHelper.getSizeMultiplier());
         toggleWidgetStyle.toggleButtonDrawable.setMinHeight( toggleWidgetStyle.toggleButtonDrawable.getMinHeight() * resolutionHelper.getSizeMultiplier());
 
+        if(toggleWidgetModel.getButtonDownImageName() == null){
+            toggleWidgetStyle.toggleButtonDownDrawable = toggleWidgetStyle.toggleButtonDrawable;
+        }else{
+            toggleWidgetStyle.toggleButtonDownDrawable = new TextureRegionDrawable(assets.getTextureAtlas(toggleWidgetModel.getAtlasName()).findRegion(toggleWidgetModel.getButtonDownImageName()));
+            toggleWidgetStyle.toggleButtonDownDrawable.setMinWidth( toggleWidgetStyle.toggleButtonDownDrawable.getMinWidth() * resolutionHelper.getSizeMultiplier());
+            toggleWidgetStyle.toggleButtonDownDrawable.setMinHeight( toggleWidgetStyle.toggleButtonDownDrawable.getMinHeight() * resolutionHelper.getSizeMultiplier());
+        }
 
         ToggleWidget toggleWidget = new ToggleWidget(toggleWidgetStyle);
 

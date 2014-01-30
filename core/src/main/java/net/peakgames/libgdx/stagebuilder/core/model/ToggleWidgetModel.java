@@ -4,6 +4,7 @@ public class ToggleWidgetModel extends BaseModel {
 
     private String backgroundImageName;
     private String buttonImageName;
+    private String buttonDownImageName;
     private String atlasName;
     private float toggleButtonPadding;
     private String initialToggle;
@@ -41,12 +42,19 @@ public class ToggleWidgetModel extends BaseModel {
         this.buttonImageName = buttonImageName;
     }
 
-
     public String getInitialToggle() {
         return initialToggle;
     }
 
     public void setInitialToggle(String initialToggle) {
         this.initialToggle = initialToggle;
+    }
+
+    public String getButtonDownImageName() {
+        return buttonDownImageName;
+    }
+
+    public void setButtonDownImageName(String buttonDownImageName) {
+        this.buttonDownImageName = buttonDownImageName;
     }
 }

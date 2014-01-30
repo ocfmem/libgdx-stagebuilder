@@ -268,6 +268,7 @@ public class XmlModelBuilder {
         toggleWidgetModel.setInitialToggle(XmlHelper.readStringAttribute(xmlPullParser, "initialToggle", "left"));
         toggleWidgetModel.setAtlasName(XmlHelper.readStringAttribute(xmlPullParser, "atlas", null));
         toggleWidgetModel.setButtonImageName(XmlHelper.readStringAttribute(xmlPullParser, "buttonImageName", null));
+        toggleWidgetModel.setButtonDownImageName(XmlHelper.readStringAttribute(xmlPullParser, "buttonDownImageName", null));
         toggleWidgetModel.setBackgroundImageName(XmlHelper.readStringAttribute(xmlPullParser, "backgroundImageName", "left"));
         toggleWidgetModel.setToggleButtonPadding(XmlHelper.readFloatAttribute(xmlPullParser, "toggleButtonPadding", 1.0f));
 
