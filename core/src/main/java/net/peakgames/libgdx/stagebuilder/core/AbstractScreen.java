@@ -22,6 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import net.peakgames.libgdx.stagebuilder.core.widgets.ToggleWidget;
 
 public abstract class AbstractScreen implements Screen {
 
@@ -186,6 +187,10 @@ public abstract class AbstractScreen implements Screen {
 
     public TextButton findTextButton(String name) {
         return (TextButton) stage.getRoot().findActor(name);
+    }
+
+    public ToggleWidget findToggleWidget(String name) {
+        return (ToggleWidget) stage.getRoot().findActor(name);
     }
 
     public StageBuilder getStageBuilder() {

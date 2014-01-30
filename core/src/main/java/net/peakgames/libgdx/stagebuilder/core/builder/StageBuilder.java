@@ -8,6 +8,7 @@ import net.peakgames.libgdx.stagebuilder.core.assets.AssetsInterface;
 import net.peakgames.libgdx.stagebuilder.core.assets.ResolutionHelper;
 import net.peakgames.libgdx.stagebuilder.core.model.*;
 import net.peakgames.libgdx.stagebuilder.core.services.LocalizationService;
+import net.peakgames.libgdx.stagebuilder.core.widgets.ToggleWidget;
 import net.peakgames.libgdx.stagebuilder.core.xml.XmlModelBuilder;
 
 import java.util.HashMap;
@@ -56,6 +57,7 @@ public class StageBuilder {
         builders.put(TextFieldModel.class, new TextFieldBuilder(assets, resolutionHelper, localizationService));
         builders.put(TextAreaModel.class, new TextAreaBuilder(assets, resolutionHelper, localizationService));
         builders.put(CheckBoxModel.class, new CheckBoxBuilder( assets, resolutionHelper, localizationService));
+        builders.put(ToggleWidgetModel.class, new ToggleWidgetBuilder( assets, resolutionHelper, localizationService));
     }
 
     public Group buildGroup(String fileName) throws Exception {
