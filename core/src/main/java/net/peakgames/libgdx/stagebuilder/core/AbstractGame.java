@@ -24,7 +24,7 @@ public abstract class AbstractGame implements ApplicationListener {
     public static final int TARGET_WIDTH = 800;
     public static final int TARGET_HEIGHT = 480;
     private static final String TAG = AbstractGame.class.getSimpleName();
-    private final Screen NULL_SCREEN = new NullScreen(this);
+    private final Screen NULL_SCREEN = new NullScreen();
     final private Stack<Screen> screens = new Stack<Screen>();
     private int width;
     private int height;
@@ -186,7 +186,7 @@ public abstract class AbstractGame implements ApplicationListener {
         try {
             return screens.peek();
         } catch (EmptyStackException e) {
-            return new NullScreen(this);
+            return new NullScreen();
         }
     }
 
@@ -217,24 +217,41 @@ public abstract class AbstractGame implements ApplicationListener {
         return this.fileHandleResolver.findBestResolution();
     }
 
-    private static class NullScreen extends AbstractScreen {
-
-        public NullScreen(AbstractGame game) {
-            super(null);
-        }
-
-        @Override
-        public void unloadAssets() {
-        }
-
-		@Override
-		public void onStageReloaded() {
-		}
+    private static class NullScreen implements Screen {
 
         @Override
         public void render(float delta) {
-            //override AbstractScreen render. There is nothing to render here.
-            Gdx.app.log("AbstractGame", "Trying to render NullScreen.");
+
+        }
+
+        @Override
+        public void resize(int width, int height) {
+
+        }
+
+        @Override
+        public void show() {
+
+        }
+
+        @Override
+        public void hide() {
+
+        }
+
+        @Override
+        public void pause() {
+
+        }
+
+        @Override
+        public void resume() {
+
+        }
+
+        @Override
+        public void dispose() {
+
         }
     }
 
