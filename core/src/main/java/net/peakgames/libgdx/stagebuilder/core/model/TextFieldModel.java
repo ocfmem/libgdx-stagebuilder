@@ -14,6 +14,7 @@ public class TextFieldModel extends ButtonModel {
 	private boolean password;
 	private String passwordChar = "*";
     private String hint;
+    private float padding;
 
 	public String getText() {
 		return text;
@@ -109,5 +110,13 @@ public class TextFieldModel extends ButtonModel {
 
     public void setHint(String hint) {
         this.hint = hint;
+    }
+
+    public float getPadding() {
+        return padding;
+    }
+
+    public void setPadding(float padding) {
+        this.padding = padding;
     }
 }

@@ -38,6 +38,10 @@ public class TextFieldBuilder extends ActorBuilder{
 
         if(textFieldModel.getBackgroundImageName() != null){
             background = createNinePatchDrawable(textFieldModel.getBackgroundImageName(), textureAtlas, textFieldModel.getBackGroundOffset());
+            background.setLeftWidth(textFieldModel.getPadding());
+            background.setRightWidth(textFieldModel.getPadding());
+            background.setBottomHeight(textFieldModel.getPadding());
+            background.setTopHeight(textFieldModel.getPadding());
         }
         
         TextFieldStyle textFieldStyle = new TextFieldStyle(font, fontColor, cursor, selection, background);
