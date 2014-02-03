@@ -39,8 +39,13 @@ public class TextAreaBuilder extends ActorBuilder{
 
         if(textAreaModel.getBackgroundImageName() != null){
             background = createNinePatchDrawable(textAreaModel.getBackgroundImageName(), textureAtlas, textAreaModel.getBackGroundOffset());
+            background.setLeftWidth(textAreaModel.getPadding());
+            background.setRightWidth(textAreaModel.getPadding());
+            background.setBottomHeight(textAreaModel.getPadding());
+            background.setTopHeight(textAreaModel.getPadding());
         }
-        
+
+
         TextFieldStyle textAreaStyle = new TextFieldStyle(font, fontColor, cursor, selection, background);
         TextArea textArea = new TextArea(getLocalizedString(textAreaModel.getText()), textAreaStyle);
         textArea.setPasswordMode(textAreaModel.isPassword());
