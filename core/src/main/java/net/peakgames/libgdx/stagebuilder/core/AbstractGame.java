@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import com.badlogic.gdx.utils.Logger;
 import net.peakgames.libgdx.stagebuilder.core.assets.Assets;
 import net.peakgames.libgdx.stagebuilder.core.assets.AssetsInterface;
 import net.peakgames.libgdx.stagebuilder.core.assets.ResolutionHelper;
@@ -39,14 +38,18 @@ public abstract class AbstractGame implements ApplicationListener {
     public abstract List<Vector2> getSupportedResolutions();
     public abstract LocalizationService getLocalizationService();
 
-    public void initialize(int width, int height) {
+    public void initialize(int width, int height, int targetWidth, int targetHeight) {
         this.width = width;
         this.height = height;
         this.supportedResolutions = getSupportedResolutions();
         fileHandleResolver = new StageBuilderFileHandleResolver(this.width, supportedResolutions);
-        this.resolutionHelper = new ResolutionHelper(TARGET_WIDTH, TARGET_HEIGHT, width, height, fileHandleResolver.findBestResolution().x);
+        this.resolutionHelper = new ResolutionHelper(targetWidth, targetHeight, width, height, fileHandleResolver.findBestResolution().x);
         this.assetsInterface = new Assets(fileHandleResolver, resolutionHelper);
         this.keyboardManager = new KeyboardManager(height);
+    }
+    
+    public void initialize(int width, int height) {
+    	initialize(width, height, TARGET_WIDTH, TARGET_HEIGHT);
     }
 
     @Override
