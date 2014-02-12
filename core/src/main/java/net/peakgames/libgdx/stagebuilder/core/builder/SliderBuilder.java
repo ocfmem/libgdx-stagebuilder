@@ -25,10 +25,6 @@ public class SliderBuilder extends ActorBuilder{
     public Actor build(BaseModel model) {
         SliderModel sliderModel = (SliderModel) model;
         setTextures(sliderModel);
-        /*knob.setMinWidth(knob.getMinWidth()*resolutionHelper.getSizeMultiplier());
-        knob.setMinHeight(knob.getMinHeight()*resolutionHelper.getSizeMultiplier());
-        background.setMinWidth(knob.getMinWidth()*resolutionHelper.getSizeMultiplier());
-        background.setMinHeight(knob.getMinHeight()*resolutionHelper.getSizeMultiplier());*/
         Slider slider = new Slider( sliderModel.getMinValue(),
                 sliderModel.getMaxValue(),
                 sliderModel.getStepSize(),
