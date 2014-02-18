@@ -37,7 +37,14 @@ public class ExternalGroupModelBuilder extends ActorBuilder {
         group.setName( model.getName());
         model.setWidth( group.getWidth());
         model.setHeight( group.getHeight());
-        Vector2 screenPos = calculateScreenPosition(model.getScreenAlignment(), model);
+        Vector2 screenPos;
+        if (model.getScreenAlignmentSupport() == null) {
+            screenPos = calculateScreenPosition(model.getScreenAlignment(), model);
+        }
+        else {
+            screenPos = calculateScreenPosition(model.getScreenAlignment(), model.getScreenAlignmentSupport(), model);
+        }
+
         if(screenPos != null){
             group.setPosition(screenPos.x, screenPos.y);
         }else{
