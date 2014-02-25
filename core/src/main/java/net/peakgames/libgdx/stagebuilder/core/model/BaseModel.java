@@ -1,6 +1,8 @@
 package net.peakgames.libgdx.stagebuilder.core.model;
 
 
+import java.util.Locale;
+
 public abstract class BaseModel {
 
     public enum ScreenAlign {
@@ -181,11 +183,11 @@ public abstract class BaseModel {
             if (s.indexOf('|') > 0) {
                 int index = s.indexOf('|');
                 String arr[] = {s.substring(0, index), s.substring(index + 1, s.length())};
-                this.screenAlignment = ScreenAlign.valueOf(arr[0].toLowerCase());
-                this.screenAlignmentSupport = ScreenAlign.valueOf(arr[1].toLowerCase());
+                this.screenAlignment = ScreenAlign.valueOf(arr[0].toLowerCase(Locale.ENGLISH));
+                this.screenAlignmentSupport = ScreenAlign.valueOf(arr[1].toLowerCase(Locale.ENGLISH));
             }
             else {
-                this.screenAlignment = ScreenAlign.valueOf(s.toLowerCase());
+                this.screenAlignment = ScreenAlign.valueOf(s.toLowerCase(Locale.ENGLISH));
             }
         }
     }

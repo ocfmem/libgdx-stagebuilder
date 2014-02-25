@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 public class StageBuilderFileHandleResolver implements FileHandleResolver {
 
@@ -83,7 +84,7 @@ public class StageBuilderFileHandleResolver implements FileHandleResolver {
 	}
 
     boolean isSoundFile(String fileName){
-        String lowerCaseFileName = fileName.toLowerCase();
+        String lowerCaseFileName = fileName.toLowerCase(Locale.ENGLISH);
         if ( lowerCaseFileName.endsWith(".mp3") || lowerCaseFileName.endsWith( ".ogg") || lowerCaseFileName.endsWith(".wav")){
             return true;
         }else{
