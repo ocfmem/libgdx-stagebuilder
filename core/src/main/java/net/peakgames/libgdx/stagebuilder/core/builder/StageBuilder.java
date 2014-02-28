@@ -103,8 +103,12 @@ public class StageBuilder {
 
     private void addActorsToStage(Group rootGroup, List<BaseModel> models) {
         for (BaseModel model : models) {
-            ActorBuilder builder = builders.get(model.getClass());
-            rootGroup.addActor(builder.build(model));
+            try {
+                ActorBuilder builder = builders.get(model.getClass());
+                rootGroup.addActor(builder.build(model));
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to build stage on actor: " + model.getName(), e);
+            }
         }
     }
 
