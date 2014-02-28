@@ -47,6 +47,9 @@ public class ImageBuilder extends ActorBuilder {
     private void updateBackgroundImagePosition(Image image) {
         Vector2 selectedResolution = assets.findBestResolution();
         Vector2 backGroundSize = resolutionHelper.calculateBackgroundSize(selectedResolution.x, selectedResolution.y);
+        image.setWidth(backGroundSize.x);
+        image.setHeight(backGroundSize.y);
+
         Vector2 backGroundPosition = resolutionHelper.calculateBackgroundPosition(image.getWidth(), image.getHeight());
         Vector2 gameAreaPosition = resolutionHelper.getGameAreaPosition();
           /*
@@ -54,7 +57,6 @@ public class ImageBuilder extends ActorBuilder {
   		 * Since the bg image is also inside the root group, bg image position should be updated.
 		 */
         image.setPosition(backGroundPosition.x - gameAreaPosition.x, backGroundPosition.y - gameAreaPosition.y);
-        image.setSize(backGroundSize.x, backGroundSize.y);
     }
 
     private Image createFromTexture(ImageModel imageModel) {
