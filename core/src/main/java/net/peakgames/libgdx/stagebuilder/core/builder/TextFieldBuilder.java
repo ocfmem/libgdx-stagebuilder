@@ -62,9 +62,26 @@ public class TextFieldBuilder extends ActorBuilder{
     }
     
     private NinePatchDrawable createNinePatchDrawable(String imageName, TextureAtlas textureAtlas ,int patchOffset) {
-    	 NinePatchDrawable ninePatchDrawable = new NinePatchDrawable();
-         NinePatch patch = new NinePatch(textureAtlas.findRegion(imageName), patchOffset, patchOffset, patchOffset, patchOffset);
-         ninePatchDrawable.setPatch(patch);
-         return ninePatchDrawable;
+        TextureAtlas.AtlasRegion region = textureAtlas.findRegion(imageName);
+        TextureRegionDrawable drawable = new TextureRegionDrawable(region);
+
+        int left = patchOffset;
+        int right = patchOffset;
+        int top = patchOffset;
+        int bottom = patchOffset;
+
+        if (left > drawable.getMinWidth() / 2f || right > drawable.getMinWidth() / 2f) {
+            left = (int) (drawable.getMinWidth() / 2f) - 2;
+            right = (int) (drawable.getMinWidth() / 2f) - 2;
+        }
+        if (top > drawable.getMinHeight() / 2f || bottom > drawable.getMinHeight() / 2f) {
+            top = (int) (drawable.getMinHeight() / 2f) - 2;
+            bottom = (int) (drawable.getMinHeight() / 2f) - 2;
+        }
+
+        NinePatchDrawable ninePatchDrawable = new NinePatchDrawable();
+        NinePatch patch = new NinePatch(region, left, right, top, bottom);
+        ninePatchDrawable.setPatch(patch);
+        return ninePatchDrawable;
     }
 }
