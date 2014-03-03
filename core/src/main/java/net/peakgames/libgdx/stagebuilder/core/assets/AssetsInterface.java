@@ -6,6 +6,9 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 
+import java.util.List;
+import java.util.Map;
+
 public interface AssetsInterface {
 
     public BitmapFont getFont(String fontName);
@@ -21,6 +24,8 @@ public interface AssetsInterface {
     public void loadAssetsSync(String key);
 
     public void loadAssetsAsync(String key, AssetLoaderListener listener);
+
+    public Map<String, List<AssetLoader.AssetConfig>> getAssetsConfiguration();
 
     public void unloadAssets(String key);
 

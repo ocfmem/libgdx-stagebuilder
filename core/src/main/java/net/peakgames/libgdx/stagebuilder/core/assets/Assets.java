@@ -6,6 +6,9 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 
+import java.util.List;
+import java.util.Map;
+
 public class Assets implements AssetsInterface {
 
     private StageBuilderFileHandleResolver fileHandleResolver;
@@ -55,6 +58,11 @@ public class Assets implements AssetsInterface {
     @Override
     public void loadAssetsAsync(String key, AssetLoaderListener listener) {
         this.assetLoader.loadAssetsAsync(key, listener);
+    }
+
+    @Override
+    public Map<String, List<AssetLoader.AssetConfig>> getAssetsConfiguration() {
+        return this.assetLoader.getAssetsConfiguration();
     }
 
     @Override

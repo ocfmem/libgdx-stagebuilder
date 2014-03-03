@@ -96,6 +96,10 @@ public class AssetLoader {
         }
     }
 
+    public Map<String, List<AssetConfig>> getAssetsConfiguration(){
+        return  assetsConfiguration;
+    }
+
     public AssetManager getAssetManager() {
         return assetManager;
     }
@@ -117,7 +121,7 @@ public class AssetLoader {
         this.assetsConfiguration.remove(key);
     }
 
-    private static class AssetConfig {
+    public static class AssetConfig {
         private String fileName;
         private Class<?> type;
 
