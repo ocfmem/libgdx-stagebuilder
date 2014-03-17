@@ -27,6 +27,8 @@ public abstract class AbstractGame implements ApplicationListener {
     final private Stack<Screen> screens = new Stack<Screen>();
     private int width;
     private int height;
+    private int targetWidth;
+    private int targetHeight;
     private List<Vector2> supportedResolutions;
     private Screen topScreen = NULL_SCREEN;
     private ResolutionHelper resolutionHelper;
@@ -41,6 +43,8 @@ public abstract class AbstractGame implements ApplicationListener {
     public void initialize(int width, int height, int targetWidth, int targetHeight) {
         this.width = width;
         this.height = height;
+        this.targetWidth = targetWidth;
+        this.targetHeight = targetHeight;
         this.supportedResolutions = getSupportedResolutions();
         fileHandleResolver = new StageBuilderFileHandleResolver(this.width, supportedResolutions);
         this.resolutionHelper = new ResolutionHelper(targetWidth, targetHeight, width, height, fileHandleResolver.findBestResolution().x);
@@ -64,16 +68,16 @@ public abstract class AbstractGame implements ApplicationListener {
         }
         this.width = newWidth;
         this.height = newHeight;
+        int newTargetWidth = targetWidth;
+        int newTargetHeight = targetHeight;
         fileHandleResolver = new StageBuilderFileHandleResolver(this.width, supportedResolutions);
-        float targetWidth = TARGET_WIDTH;
-        float targetHeight = TARGET_HEIGHT;
         if (this.height > this.width) {
-            targetWidth = TARGET_HEIGHT;
-            targetHeight = TARGET_WIDTH;
+            newTargetWidth = targetHeight;
+            newTargetHeight = targetWidth;
         }
         this.resolutionHelper = new ResolutionHelper(
-                targetWidth,
-                targetHeight,
+                newTargetWidth,
+                newTargetHeight,
                 this.width,
                 this.height,
                 this.fileHandleResolver.findBestResolution().x);
