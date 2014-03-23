@@ -9,6 +9,8 @@
     <textbutton name="image_screen" atlas="common.atlas" frameUp="green_button" frameDown="green_buttonH" x="270" y="340" witdth="400" text="Image" fontName="default_font.fnt" />
     <textbutton name="button_screen" atlas="common.atlas" frameUp="green_button" frameDown="green_buttonH" x="270" y="400" witdth="400" text="Button - TextButton" fontName="default_font.fnt"/>
 
+    <textbutton name="list_widget_screen" atlas="common.atlas" frameUp="green_button" frameDown="green_buttonH" x="270" y="0" witdth="400" text="List Widget" fontName="default_font.fnt"/>
+
     <!-- This custom widget is used as an indicator for async asset loading. Before loading assets visibility is set to true,
          after loading assets visibility is set back to false -->
     <net.peakgames.libgdx.stagebuilder.core.widgets.LoadingWidget 
