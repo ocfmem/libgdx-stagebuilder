@@ -23,4 +23,6 @@
         foregroundFrame="loading_circle_foreground"
         atlasName="common.atlas"
     />
+
+
 </group>

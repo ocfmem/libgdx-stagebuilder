@@ -4,7 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import net.peakgames.libgdx.stagebuilder.core.builder.StageBuilder;
-import net.peakgames.libgdx.stagebuilder.core.widgets.ListWidgetAdapter;
+import net.peakgames.libgdx.stagebuilder.core.widgets.listwidget.ListWidgetAdapter;
 
 public class LabelListAdapter extends ListWidgetAdapter {
 

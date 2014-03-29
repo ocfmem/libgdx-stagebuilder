@@ -1,13 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <group>
-    <label name="fps" x="0" y="0" width="800"  height="50" align="center"  text="FPS : "  fontName="default_font.fnt" fontColor="FF0000"/>
     <button name="backButton" x="10" y="420" atlas="common.atlas" frameUp="back_button" frameDown="back_buttonH"/>
-    <net.peakgames.libgdx.stagebuilder.core.widgets.ListWidget
+    <net.peakgames.libgdx.stagebuilder.core.widgets.listwidget.ListWidget
             name="label_list_widget"
             debug="true"
             x="0"
             y="0"
             width="150"
-            height="300"
+            height="480"
             />
+
+
+    <net.peakgames.libgdx.stagebuilder.core.widgets.listwidget.ListWidget
+            name="complex_list_widget"
+            debug="true"
+            x="200"
+            y="0"
+            width="200"
+            height="480"
+            />
+
+    <textbutton name="addLabelItemButton" atlas="common.atlas" frameUp="green_button" frameDown="green_buttonH" x="500" y="400" witdth="400" text="Add Label Item" fontName="default_font.fnt" fontColor="000000" />
+    <textbutton name="addComplexItemButton" atlas="common.atlas" frameUp="green_button" frameDown="green_buttonH" x="500" y="350" witdth="400" text="Add Complex Item" fontName="default_font.fnt" fontColor="000000" />
+    <label name="fps" x="0" y="0" width="800" height="50" align="center" text="FPS : " fontName="default_font.fnt" fontColor="FF0000"/>
 </group>

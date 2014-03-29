@@ -1,4 +1,4 @@
-package net.peakgames.libgdx.stagebuilder.core.widgets;
+package net.peakgames.libgdx.stagebuilder.core.widgets.listwidget;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
@@ -12,6 +12,8 @@ public interface IListWidgetAdapter {
     public int getCount();
 
     public Object getItem(int position);
+
+    public void addItem(Object item);
 
     public Actor getActor(int position, Actor reusableActor);
 

@@ -1,4 +1,4 @@
-package net.peakgames.libgdx.stagebuilder.core.widgets;
+package net.peakgames.libgdx.stagebuilder.core.widgets.listwidget;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import net.peakgames.libgdx.stagebuilder.core.builder.StageBuilder;
@@ -44,4 +44,8 @@ public abstract class ListWidgetAdapter implements IListWidgetAdapter {
         this.dataSetChangeListener = listener;
     }
 
+    @Override
+    public void addItem(Object item) {
+        this.items.add(item);
+    }
 }
