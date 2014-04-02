@@ -14,9 +14,7 @@ import net.peakgames.libgdx.stagebuilder.core.xml.XmlModelBuilder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 public class StageBuilder {
     public static final String ROOT_GROUP_NAME = "AbsoluteLayoutRootGroup";
@@ -29,7 +27,7 @@ public class StageBuilder {
     private AssetsInterface assets;
     private ResolutionHelper resolutionHelper;
     private LocalizationService localizationService;
-    private ThreadPoolExecutor groupBuildingPool;
+    private ExecutorService groupBuildingPool;
     private StageBuilderListener stageBuilderListener;
 
     public StageBuilder(AssetsInterface assets, ResolutionHelper resolutionHelper, LocalizationService localizationService) {
@@ -38,8 +36,7 @@ public class StageBuilder {
         this.localizationService = localizationService;
 
         registerWidgetBuilders(assets);
-
-        groupBuildingPool = new ThreadPoolExecutor(1,1,1, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(3));
+        groupBuildingPool = Executors.newFixedThreadPool(1);
     }
 
     public void switchOrientation() {
@@ -94,7 +91,6 @@ public class StageBuilder {
         this.stageBuilderListener = stageBuilderListener;
     }
 
-
     private class GroupBuildingTask implements Runnable {
         private String fileName;
 
@@ -105,26 +101,12 @@ public class StageBuilder {
         @Override
         public void run() {
             try {
-                XmlModelBuilder xmlModelBuilder = new XmlModelBuilder();
-                List<BaseModel> modelList = null;
-                modelList = xmlModelBuilder.buildModels(getLayoutFile(fileName));
-
-                GroupModel groupModel = (GroupModel) modelList.get(0);
-                Group group = new Group();
-                GroupBuilder groupBuilder = (GroupBuilder) builders.get(GroupModel.class);
-                groupBuilder.setBasicProperties(groupModel, group);
-                updateGroupSizeAndPosition(group, groupModel);
-                for (BaseModel model : groupModel.getChildren()) {
-                    ActorBuilder builder = builders.get(model.getClass());
-                    group.addActor(builder.build(model));
-                }
+                Group group = buildGroup(fileName);
                 fireOnGroupBuilded(fileName, group);
             } catch (Exception e) {
                 fireOnGroupBuildFailed(fileName, e);
             }
         }
-
-
     }
 
     private void fireOnGroupBuildFailed(String fileName, Exception e) {
