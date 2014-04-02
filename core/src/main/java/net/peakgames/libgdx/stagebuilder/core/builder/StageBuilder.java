@@ -6,14 +6,15 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import net.peakgames.libgdx.stagebuilder.core.assets.AssetsInterface;
 import net.peakgames.libgdx.stagebuilder.core.assets.ResolutionHelper;
+import net.peakgames.libgdx.stagebuilder.core.assets.StageBuilderListener;
 import net.peakgames.libgdx.stagebuilder.core.model.*;
 import net.peakgames.libgdx.stagebuilder.core.services.LocalizationService;
-import net.peakgames.libgdx.stagebuilder.core.widgets.ToggleWidget;
 import net.peakgames.libgdx.stagebuilder.core.xml.XmlModelBuilder;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.*;
 
 public class StageBuilder {
     public static final String ROOT_GROUP_NAME = "AbsoluteLayoutRootGroup";
@@ -26,6 +27,8 @@ public class StageBuilder {
     private AssetsInterface assets;
     private ResolutionHelper resolutionHelper;
     private LocalizationService localizationService;
+    private ExecutorService groupBuildingPool;
+    private StageBuilderListener stageBuilderListener;
 
     public StageBuilder(AssetsInterface assets, ResolutionHelper resolutionHelper, LocalizationService localizationService) {
         this.assets = assets;
@@ -33,6 +36,7 @@ public class StageBuilder {
         this.localizationService = localizationService;
 
         registerWidgetBuilders(assets);
+        groupBuildingPool = Executors.newFixedThreadPool(1);
     }
 
     public void switchOrientation() {
@@ -73,6 +77,48 @@ public class StageBuilder {
             group.addActor(builder.build(model));
         }
         return group;
+    }
+
+    public void buildGroupAsync(String fileName){
+        groupBuildingPool.execute(new GroupBuildingTask(fileName));
+    }
+
+    public StageBuilderListener getStageBuilderListener() {
+        return stageBuilderListener;
+    }
+
+    public void setStageBuilderListener(StageBuilderListener stageBuilderListener) {
+        this.stageBuilderListener = stageBuilderListener;
+    }
+
+    private class GroupBuildingTask implements Runnable {
+        private String fileName;
+
+        private GroupBuildingTask(String fileName) {
+            this.fileName = fileName;
+        }
+
+        @Override
+        public void run() {
+            try {
+                Group group = buildGroup(fileName);
+                fireOnGroupBuilded(fileName, group);
+            } catch (Exception e) {
+                fireOnGroupBuildFailed(fileName, e);
+            }
+        }
+    }
+
+    private void fireOnGroupBuildFailed(String fileName, Exception e) {
+        if(stageBuilderListener != null){
+            stageBuilderListener.onGroupBuildFailed(fileName, e);
+        }
+    }
+
+    private void fireOnGroupBuilded(String fileName, Group group) {
+        if(stageBuilderListener != null){
+            stageBuilderListener.onGroupBuilded(fileName, group);
+        }
     }
 
     private void updateGroupSizeAndPosition(Group group, GroupModel referenceModel) {
