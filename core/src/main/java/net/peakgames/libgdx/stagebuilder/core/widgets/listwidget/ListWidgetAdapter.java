@@ -48,4 +48,8 @@ public abstract class ListWidgetAdapter implements IListWidgetAdapter {
     public void addItem(Object item) {
         this.items.add(item);
     }
+
+    @Override
+    public void actorRemoved(Actor actor) {
+    }
 }

@@ -21,7 +21,7 @@ import java.util.Map;
 
 public class ListWidget extends WidgetGroup implements ICustomWidget, ListWidgetDataSetChangeListener {
 
-    public static final float DEFAULT_VELOCITY = 750f;
+    public static final float DEFAULT_VELOCITY = 300f;
     public static final float DEFAULT_FLING_TIME = 1f; // 1 second.
     public static final float BLOCKED_DRAG_MOVE_COEFFICIENT = 0.15f;
     private static final String TAG = "StageBuilder.ListWidget";
@@ -148,20 +148,14 @@ public class ListWidget extends WidgetGroup implements ICustomWidget, ListWidget
     private void handleDragUpBlocked() {
         Actor bottomActor = getBottomActor();
         if (bottomActor != null) {
-            float actorPaddingBottom = bottomActor.getY() - getY();
-            if (actorPaddingBottom <= maxBlockedDragDistance) {
-                moveItems(DragDirection.UP, dragDistance * BLOCKED_DRAG_MOVE_COEFFICIENT);
-            }
+            moveItems(DragDirection.UP, dragDistance * BLOCKED_DRAG_MOVE_COEFFICIENT);
         }
     }
 
     private void handleDragDownBlocked() {
         Actor firstActor = getChildWithUserObject(0);
         if (firstActor != null) {
-            float firstActorTopPadding = (getY() + getHeight()) - (firstActor.getY() + firstActor.getHeight());
-            if (firstActorTopPadding <= maxBlockedDragDistance) {
-                moveItems(DragDirection.DOWN, dragDistance * BLOCKED_DRAG_MOVE_COEFFICIENT);
-            }
+            moveItems(DragDirection.DOWN, dragDistance * BLOCKED_DRAG_MOVE_COEFFICIENT);
         }
     }
 
@@ -311,8 +305,10 @@ public class ListWidget extends WidgetGroup implements ICustomWidget, ListWidget
                         break;
                     }
                     Actor newActor = listAdapter.getActor(maxIndex + 1, actor);
+                    newActor.setUserObject(maxIndex + 1);
                     newActor.setY(bottomActor.getY() - newActor.getHeight());
                     removeActor(actor);
+                    listAdapter.actorRemoved(actor);
                     addActor(newActor);
                 }
             } else {
@@ -323,8 +319,10 @@ public class ListWidget extends WidgetGroup implements ICustomWidget, ListWidget
                         break;
                     }
                     Actor newActor = listAdapter.getActor(minIndex - 1, actor);
+                    newActor.setUserObject(minIndex - 1);
                     newActor.setY(getActorTopY(topActor));
                     removeActor(actor);
+                    listAdapter.actorRemoved(actor);
                     addActor(newActor);
                 }
             }
@@ -365,6 +363,7 @@ public class ListWidget extends WidgetGroup implements ICustomWidget, ListWidget
 
     private Actor addActorToListWidget(final int listAdapterIndex) {
         final Actor actor = listAdapter.getActor(listAdapterIndex, null);
+        actor.setUserObject(listAdapterIndex);
         addActor(actor);
         actor.setY(getHeight() - (listAdapterIndex + 1) * actor.getHeight());
         actor.addListener(listItemClickListener);

@@ -20,7 +20,6 @@ public class LabelListAdapter extends ListWidgetAdapter {
                 String value = (String) getItem(position);
                 Label label = (Label) group.findActor("list_item_label");
                 label.setText(value);
-                group.setUserObject(position);
                 return group;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -29,7 +28,6 @@ public class LabelListAdapter extends ListWidgetAdapter {
             String value = (String) getItem(position);
             Label label = (Label) ((Group)reusableActor).findActor("list_item_label");
             label.setText(value);
-            reusableActor.setUserObject(position);
             return reusableActor;
         }
         return null;

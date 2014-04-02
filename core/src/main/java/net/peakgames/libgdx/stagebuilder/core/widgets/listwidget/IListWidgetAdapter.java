@@ -21,4 +21,6 @@ public interface IListWidgetAdapter {
 
     public void registerDataSetChangeListener(ListWidgetDataSetChangeListener listener);
 
+    public void actorRemoved(Actor actor);
+
 }

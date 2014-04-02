@@ -15,9 +15,9 @@
             name="complex_list_widget"
             debug="true"
             x="200"
-            y="0"
+            y="100"
             width="200"
-            height="480"
+            height="300"
             />
 
     <textbutton name="addLabelItemButton" atlas="common.atlas" frameUp="green_button" frameDown="green_buttonH" x="500" y="400" witdth="400" text="Add Label Item" fontName="default_font.fnt" fontColor="000000" />

@@ -27,13 +27,11 @@ public class ComplextListAdapter extends ListWidgetAdapter {
             try {
                 Group group = stageBuilder.buildGroup("listwidget/list_item_complex.xml");
                 updateActor(position, group);
-                group.setUserObject(position);
                 return group;
             } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
-            reusableActor.setUserObject(position);
             updateActor(position, (Group) reusableActor);
             return reusableActor;
         }
@@ -56,4 +54,7 @@ public class ComplextListAdapter extends ListWidgetAdapter {
         logo.setDrawable(drawable);
     }
 
+    @Override
+    public void actorRemoved(Actor actor) {
+    }
 }
