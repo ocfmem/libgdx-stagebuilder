@@ -19,6 +19,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Displays a list of scrollable items. List items are inserted to the list using an Adapter.
+ * Adapter pulls content from a dataasource such as java.util.ArrayList (or any any other collection)
+ *
+ * This is a scene2d widget. Items are scrolled vertically.
+ *
+ * This widget reuses its child actors.
+ */
 public class ListWidget extends WidgetGroup implements ICustomWidget, ListWidgetDataSetChangeListener {
 
     public static final float DEFAULT_VELOCITY = 300f;
@@ -163,6 +171,10 @@ public class ListWidget extends WidgetGroup implements ICustomWidget, ListWidget
         flingTime = flingTime - delta;
         if (flingTime > 0 && flingVelocity != 0) {
             float moveDistance = delta * flingVelocity * -1f;
+            if (Math.abs(moveDistance) > getHeight()) {
+                //limit move distance.
+                moveDistance = flingVelocity < 0 ? (getHeight() * -1) : getHeight();
+            }
             flingVelocity = flingVelocity * 0.95f;
             DragDirection direction = flingVelocity > 0 ? DragDirection.UP : DragDirection.DOWN;
             if (checkDragBlocked(direction)) {
@@ -337,6 +349,9 @@ public class ListWidget extends WidgetGroup implements ICustomWidget, ListWidget
         recycledActors.clear();
         if (dragDirection == DragDirection.UP) {
             Actor topActor = getTopActor();
+            if (topActor == null) {
+                return;
+            }
             int actorIndex = getActorIndex(topActor);
             for (int i = actorIndex; i < listAdapter.getCount(); i++) {
                 Actor actor = getChildWithUserObject(i);
@@ -429,7 +444,7 @@ public class ListWidget extends WidgetGroup implements ICustomWidget, ListWidget
         for (int i = 0; i < count; i++) {
             Actor child = children.get(i);
             if (child.getUserObject() != null) {
-                if (index == (Integer) child.getUserObject()) {
+                if (index == child.getUserObject()) {
                     return child;
                 }
             }

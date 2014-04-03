@@ -6,6 +6,9 @@ import net.peakgames.libgdx.stagebuilder.core.builder.StageBuilder;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * An abstract list widget adapter that uses list of items for populating list view.
+ */
 public abstract class ListWidgetAdapter implements IListWidgetAdapter {
 
     protected List<Object> items = Collections.EMPTY_LIST;
