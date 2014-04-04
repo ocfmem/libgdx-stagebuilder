@@ -97,6 +97,10 @@ public class ResolutionHelper {
         Vector2 result = new Vector2();
         float backgroundAspectRatio = backgroundWidth / backgroundHeight;
         float screenAspectRatio = this.screenWidth / this.screenHeight;
+        if(screenHeight>screenWidth){
+            backgroundAspectRatio = backgroundHeight / backgroundWidth;
+        }
+
         if (backgroundAspectRatio > screenAspectRatio) {
             result.x = this.screenHeight * backgroundAspectRatio;
             result.y = this.screenHeight;
@@ -109,6 +113,9 @@ public class ResolutionHelper {
 
     public Vector2 calculateBackgroundPosition(float backgroundWidth, float backgroundHeight) {
         Vector2 bgSize = calculateBackgroundSize(backgroundWidth, backgroundHeight);
+        if(screenHeight>screenWidth){
+            bgSize = calculateBackgroundSize(backgroundHeight, backgroundWidth);
+        }
         Vector2 result = new Vector2();
         result.x = (this.screenWidth - bgSize.x) * 0.5f;
         result.y = (this.screenHeight - bgSize.y) * 0.5f;
