@@ -42,6 +42,14 @@ public class ListWidgetScreen extends DemoScreen {
             }
         });
 
+        findButton("removeLabelItemButton").addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                listAdapter.removeTopActor();
+                listAdapter.notifyDataSetChanged();
+            }
+        });
+
         final ListWidget complexListWidget = (ListWidget) findActor("complex_list_widget");
         final ComplextListAdapter complextListAdapter = new ComplextListAdapter(getStageBuilder());
 
@@ -57,6 +65,14 @@ public class ListWidgetScreen extends DemoScreen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 complextListAdapter.addItem(ListItem.generateRandom());
+                complextListAdapter.notifyDataSetChanged();
+            }
+        });
+
+        findButton("removeComplexItemButton").addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                complextListAdapter.removeTopActor();
                 complextListAdapter.notifyDataSetChanged();
             }
         });

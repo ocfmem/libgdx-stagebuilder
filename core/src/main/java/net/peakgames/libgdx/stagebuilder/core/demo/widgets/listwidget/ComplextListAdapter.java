@@ -54,6 +54,13 @@ public class ComplextListAdapter extends ListWidgetAdapter {
         logo.setDrawable(drawable);
     }
 
+    //For testing dynamic removal
+    public void removeTopActor(){
+        if(!this.items.isEmpty()){
+            this.items.remove(0);
+        }
+    }
+
     @Override
     public void actorRemoved(Actor actor) {
     }
