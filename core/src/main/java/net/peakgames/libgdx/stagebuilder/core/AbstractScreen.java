@@ -28,6 +28,8 @@ public abstract class AbstractScreen implements Screen {
 
 	public static final long SCREEN_REFRESH_CHECK_PERIOD_MS = 1000;
     private static final boolean keepAspectRatio = true;
+    private static final String PORTRAIT_SUFFIX = "_portrait";
+    private static final String LANDSCAPE_SUFFIX = "_landscape";
     public final String TAG = getClass().getSimpleName();
     protected Graphics graphics;
     protected SpriteBatch spriteBatch;
@@ -37,6 +39,7 @@ public abstract class AbstractScreen implements Screen {
     private AssetManager assetManager;
     private long lastScreenRefreshCheckTimestamp = System.currentTimeMillis();
     private String layoutFileChecksum;
+    private boolean changesOrientation = false;
     
     /**
      * parameters map that is used to pass configuration data for screen.
@@ -45,6 +48,11 @@ public abstract class AbstractScreen implements Screen {
 	private StageBuilder stageBuilder;
 
     public AbstractScreen(AbstractGame game) {
+        this(game, false);
+    }
+
+    public AbstractScreen(AbstractGame game, boolean changesOrientation) {
+        this.changesOrientation = changesOrientation;
         if (game == null) {
             return;
         }
@@ -76,8 +84,24 @@ public abstract class AbstractScreen implements Screen {
         spriteBatch.setProjectionMatrix(camera.combined);
     }
 
+    public boolean isLandscape(){
+        if(game.getWidth()>game.getHeight()){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     private String getFileName() {
-        return this.getClass().getSimpleName() + ".xml";
+        if(changesOrientation){
+            if(isLandscape()){
+                return this.getClass().getSimpleName() + LANDSCAPE_SUFFIX + ".xml";
+            } else {
+                return this.getClass().getSimpleName() + PORTRAIT_SUFFIX + ".xml";
+            }
+        } else {
+            return this.getClass().getSimpleName() + ".xml";
+        }
     }
 
     public abstract void unloadAssets();
@@ -129,10 +153,29 @@ public abstract class AbstractScreen implements Screen {
     public void resize(int newWidth, int newHeight) {
         Gdx.app.log(TAG, "resize " + newWidth + " x " + newHeight);
         if (isResizable()) {
+            beforeReloadStage();
             reloadStage();
+            afterReloadStage();
+            this.layoutFileChecksum = calculateLayoutFileChecksum();
         } else {
             Gdx.app.log(TAG, "Screen is not resizable.");
         }
+    }
+
+    /**
+     * Subclasses should override this method if they want to load saved state or make changes after stage reload.
+     * For example when screen orientation changes.
+     */
+    public void afterReloadStage() {
+
+    }
+
+    /**
+     * Subclasses should override this method if they want to save state or make changes before stage reload.
+     * For example when screen orientation changes.
+     */
+    public void beforeReloadStage() {
+
     }
 
     @Override
@@ -210,5 +253,13 @@ public abstract class AbstractScreen implements Screen {
 
     public Group getRoot() {
         return (Group) stage.getRoot().findActor(StageBuilder.ROOT_GROUP_NAME);
+    }
+
+    public boolean isChangesOrientation() {
+        return changesOrientation;
+    }
+
+    public void setChangesOrientation(boolean changesOrientation) {
+        this.changesOrientation = changesOrientation;
     }
 }
