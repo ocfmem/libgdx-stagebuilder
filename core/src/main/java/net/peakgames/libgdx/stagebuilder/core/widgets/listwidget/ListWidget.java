@@ -29,27 +29,32 @@ import java.util.Map;
  */
 public class ListWidget extends WidgetGroup implements ICustomWidget, ListWidgetDataSetChangeListener {
 
+    private static final String TAG = "StageBuilder.ListWidget";
+
     public static final float DEFAULT_VELOCITY = 300f;
     public static final float DEFAULT_FLING_TIME = 1f; // 1 second.
-    public static final float BLOCKED_DRAG_MOVE_COEFFICIENT = 0.15f;
-    private static final String TAG = "StageBuilder.ListWidget";
+    public static final float DEFAULT_BLOCKED_DRAG_MOVE_COEFFICIENT = 0.15f;
+    public static final float MAX_FLING_DELAY_MS = 150;
+    public static final float DEFAULT_FLING_VELOCITY_FRICTION = 0.95f;
+    private float flingTime = DEFAULT_FLING_TIME;
+
     private IListWidgetAdapter listAdapter;
     private boolean drawDebug = false;
     private ShapeRenderer debugRenderer;
     private boolean needsLayout = false;
     private final Vector2 lastDragPoint = new Vector2();
     private Vector2 gameAreaPosition;
-    //Drag yapilmasini engellemek icin.
     private boolean allActorsVisible = true;
     private List<Actor> recycledActors = new ArrayList<Actor>();
     private ListWidgetState state = ListWidgetState.STEADY;
     private float touchDownY;
     private float flingVelocity;
-    private float flingTime = DEFAULT_FLING_TIME;
-    private float maxBlockedDragDistance = 50f;
+
     //distance (y) between last two drag events.
     private float dragDistance;
     private float clickCancelDragThreshold = 5f;
+    private long lastTouchDragTime;
+
 
     private OnItemClickedListener onItemClickedListener;
     private InputListener listItemClickListener = new ClickListener() {
@@ -85,11 +90,8 @@ public class ListWidget extends WidgetGroup implements ICustomWidget, ListWidget
         if (this.drawDebug) {
             this.debugRenderer = new ShapeRenderer();
         }
-
         float positionMultiplier = resolutionHelper.getPositionMultiplier();
         setSize(getWidth() * positionMultiplier, getHeight() * positionMultiplier);
-
-        maxBlockedDragDistance = maxBlockedDragDistance * positionMultiplier;
         clickCancelDragThreshold = clickCancelDragThreshold * positionMultiplier;
         addListener(new ListWidgetTouchListener());
     }
@@ -155,27 +157,27 @@ public class ListWidget extends WidgetGroup implements ICustomWidget, ListWidget
 
     private void handleDragUpBlocked() {
         Actor bottomActor = getBottomActor();
-        if (bottomActor != null) {
-            moveItems(DragDirection.UP, dragDistance * BLOCKED_DRAG_MOVE_COEFFICIENT);
+        if (bottomActor != null && isDragging(System.currentTimeMillis())) {
+            moveItems(DragDirection.UP, dragDistance * DEFAULT_BLOCKED_DRAG_MOVE_COEFFICIENT);
         }
     }
 
     private void handleDragDownBlocked() {
         Actor firstActor = getChildWithUserObject(0);
-        if (firstActor != null) {
-            moveItems(DragDirection.DOWN, dragDistance * BLOCKED_DRAG_MOVE_COEFFICIENT);
+        if (firstActor != null && isDragging(System.currentTimeMillis())) {
+            moveItems(DragDirection.DOWN, dragDistance * DEFAULT_BLOCKED_DRAG_MOVE_COEFFICIENT);
         }
     }
 
     private void handleFling(float delta) {
-        flingTime = flingTime - delta;
+        flingTime = flingTime- delta;
         if (flingTime > 0 && flingVelocity != 0) {
             float moveDistance = delta * flingVelocity * -1f;
             if (Math.abs(moveDistance) > getHeight()) {
                 //limit move distance.
                 moveDistance = flingVelocity < 0 ? (getHeight() * -1) : getHeight();
             }
-            flingVelocity = flingVelocity * 0.95f;
+            flingVelocity = flingVelocity * DEFAULT_FLING_VELOCITY_FRICTION;
             DragDirection direction = flingVelocity > 0 ? DragDirection.UP : DragDirection.DOWN;
             if (checkDragBlocked(direction)) {
                 if (direction == DragDirection.DOWN) {
@@ -262,6 +264,10 @@ public class ListWidget extends WidgetGroup implements ICustomWidget, ListWidget
         public void touchDragged(InputEvent event, float x, float y, int pointer) {
             DragDirection dragDirection = lastDragPoint.y > y ? DragDirection.DOWN : DragDirection.UP;
             dragDistance = lastDragPoint.y - y;
+            if (Math.abs(dragDistance) > clickCancelDragThreshold) {
+                lastTouchDragTime = System.currentTimeMillis();
+            }
+
             lastDragPoint.set(x, y);
             state = ListWidgetState.DRAGGING;
 
@@ -275,31 +281,39 @@ public class ListWidget extends WidgetGroup implements ICustomWidget, ListWidget
             }
 
             moveItems(dragDirection, dragDistance);
-
         }
 
         private float calculateVelocity(float y) {
-            float duration = ((float) (System.currentTimeMillis() - touchDownTimestamp)) / 1000f;
-            float distance = y - touchDownY;
-            return distance / duration;
+            long now = System.currentTimeMillis();
+            if (isDragging(now)) {
+                float duration = ((float) (now - touchDownTimestamp)) / 1000f;
+                float distance = y - touchDownY;
+                return distance / duration;
+            } else {
+                return 0f;
+            }
         }
+    }
+
+    private boolean isDragging(long now) {
+        return now - lastTouchDragTime < MAX_FLING_DELAY_MS;
     }
 
     /**
      * @param dragDirection touchDragged direction (UP or DOWN)
-     * @return ilk item en tepedeyse ya da son item en alttaysa true doner, drag up yapilmasina izin vermez.
+     * @return returns true if drag is allowed.
      */
     private boolean checkDragBlocked(DragDirection dragDirection) {
         if (dragDirection == DragDirection.DOWN) {
             Actor firstItemActor = getChildWithUserObject(0);
             if (firstItemActor != null && firstItemActor.getY() + firstItemActor.getHeight() <= getHeight()) {
-                //ilk eleman ise drag yaptirma.
+                //if first item, block dragging
                 return true;
             }
         } else {
             Actor bottomActor = getBottomActor();
             if (bottomActor.getY() > 0 && (getActorIndex(bottomActor) == listAdapter.getCount() - 1)) {
-                //son eleman ise drag yapmaya izin verme.
+                //if last item, block dragging
                 return true;
             }
         }
