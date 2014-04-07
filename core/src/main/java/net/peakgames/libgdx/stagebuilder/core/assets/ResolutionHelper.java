@@ -36,6 +36,9 @@ public class ResolutionHelper {
         this.gameAreaBounds = calculateGameAreaBounds(targetAspectRatio, screenWidth, screenHeight);
         this.gameAreaPosition = calculateGameAreaPosition(targetAspectRatio, screenWidth, screenHeight);
         this.targetAssetSizeRatio = gameAreaBounds.x / selectedResolutionWidth;
+        if(screenHeight>screenWidth){
+            this.targetAssetSizeRatio = gameAreaBounds.y / selectedResolutionWidth;
+        }
     }
 
     /**
