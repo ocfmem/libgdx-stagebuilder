@@ -88,6 +88,14 @@ public class MenuScreen extends DemoScreen {
             }
         });
 
+        findButton("list_widget_screen").addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ListWidgetScreen listWidgetScreen = new ListWidgetScreen(game);
+                game.addScreen(listWidgetScreen);
+            }
+        });
+
     }
 
 }

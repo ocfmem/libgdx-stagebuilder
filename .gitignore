@@ -26,3 +26,8 @@ target
 *.iml
 .idea/
 android/gen-external-apklibs/
+
+*.so
+*.dll
+*.dylib
+android/libs
