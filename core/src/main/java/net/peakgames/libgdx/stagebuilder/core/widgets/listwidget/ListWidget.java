@@ -458,7 +458,7 @@ public class ListWidget extends WidgetGroup implements ICustomWidget, ListWidget
         for (int i = 0; i < count; i++) {
             Actor child = children.get(i);
             if (child.getUserObject() != null) {
-                if (index == child.getUserObject()) {
+                if (index == (Integer)child.getUserObject()) {
                     return child;
                 }
             }
