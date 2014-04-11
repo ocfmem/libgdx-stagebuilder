@@ -7,6 +7,8 @@ import com.badlogic.gdx.math.Vector2;
  * This class is intended to be used with Stage Builder.
  * @see net.peakgames.libgdx.stagebuilder.core.builder.StageBuilder
  */
+
+
 public class ResolutionHelper {
     private float targetAspectRatio;
     private float screenWidth;
@@ -16,7 +18,7 @@ public class ResolutionHelper {
     private float targetWidth;
     private float targetHeight;
     private float targetAssetSizeRatio;
-
+    
     /**
      * @param targetWidth  virtual width of the game area.
      * @param targetHeight virtual height of the game area.
@@ -102,9 +104,19 @@ public class ResolutionHelper {
         Vector2 result = new Vector2();
         float backgroundAspectRatio = backgroundWidth / backgroundHeight;
         float screenAspectRatio = this.screenWidth / this.screenHeight;
+        float horizontalWidth = 0;
+        float verticalWidth = 0;
+        // portrait orientation
         if(screenHeight>screenWidth){
-            backgroundAspectRatio = backgroundHeight / backgroundWidth;
+        	horizontalWidth = Math.min(backgroundHeight, backgroundWidth);
+        	verticalWidth = Math.max(backgroundHeight, backgroundWidth);
+        } else {
+        	// landscape orientation
+        	horizontalWidth = Math.max(backgroundHeight, backgroundWidth);
+        	verticalWidth = Math.min(backgroundHeight, backgroundWidth);
         }
+        
+        backgroundAspectRatio = horizontalWidth / verticalWidth;
 
         if (backgroundAspectRatio > screenAspectRatio) {
             result.x = this.screenHeight * backgroundAspectRatio;
@@ -118,9 +130,6 @@ public class ResolutionHelper {
 
     public Vector2 calculateBackgroundPosition(float backgroundWidth, float backgroundHeight) {
         Vector2 bgSize = calculateBackgroundSize(backgroundWidth, backgroundHeight);
-        if(screenHeight>screenWidth){
-            bgSize = calculateBackgroundSize(backgroundHeight, backgroundWidth);
-        }
         Vector2 result = new Vector2();
         result.x = (this.screenWidth - bgSize.x) * 0.5f;
         result.y = (this.screenHeight - bgSize.y) * 0.5f;
