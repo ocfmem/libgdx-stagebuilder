@@ -321,6 +321,10 @@ public class ListWidget extends WidgetGroup implements ICustomWidget, ListWidget
     }
 
     private void moveItems(DragDirection dragDirection, float dragDistance) {
+        if ((dragDirection == DragDirection.UP && dragDistance>0) || (dragDirection == DragDirection.DOWN && dragDistance < 0)) {
+            return;
+        }
+
         findRecycledActors(dragDirection, Math.abs(dragDistance));
         if (recycledActors.isEmpty() == false) {
             if (dragDirection == DragDirection.UP) {
