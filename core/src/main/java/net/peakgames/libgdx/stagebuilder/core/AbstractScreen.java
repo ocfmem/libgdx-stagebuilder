@@ -93,15 +93,7 @@ public abstract class AbstractScreen implements Screen {
     }
 
     private String getFileName() {
-//        if(changesOrientation){
-//            if(isLandscape()){
-//                return this.getClass().getSimpleName() + LANDSCAPE_SUFFIX + ".xml";
-//            } else {
-//                return this.getClass().getSimpleName() + PORTRAIT_SUFFIX + ".xml";
-//            }
-//        } else {
-            return this.getClass().getSimpleName() + ".xml";
-//        }
+        return this.getClass().getSimpleName() + ".xml";
     }
 
     public abstract void unloadAssets();
