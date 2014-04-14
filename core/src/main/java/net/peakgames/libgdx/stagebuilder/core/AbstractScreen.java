@@ -170,13 +170,27 @@ public abstract class AbstractScreen implements Screen {
 
     }
 
+    /**
+     * Subclasses should override this method if they want to implement some logic before UI
+     * For example preparing data for UI
+     */
+    public void preShow() {}
+
+    /**
+     * Subclasses should override this method if they want to implement some logic after UI
+     * For example executing server responses immediately after UI created
+     */
+    public void postShow() {}
+
     @Override
     public void show() {
+        preShow();
         Gdx.input.setInputProcessor(this.stage);
         Gdx.app.log(TAG, "show");
         stage.getRoot().getColor().a = 0;
         stage.addAction(Actions.fadeIn(0.3f));
         layoutFileChecksum = calculateLayoutFileChecksum();
+        postShow();
     }
 
     @Override
