@@ -3,10 +3,12 @@ package net.peakgames.libgdx.stagebuilder.core.widgets.listwidget;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.SnapshotArray;
@@ -54,6 +56,8 @@ public class ListWidget extends WidgetGroup implements ICustomWidget, ListWidget
     private float dragDistance;
     private float clickCancelDragThreshold = 5f;
     private long lastTouchDragTime;
+
+    private Vector2 tmpVector = new Vector2();
 
 
     private OnItemClickedListener onItemClickedListener;
@@ -153,6 +157,21 @@ public class ListWidget extends WidgetGroup implements ICustomWidget, ListWidget
             default:
                 break;
         }
+    }
+
+    @Override
+    public Actor hit(float x, float y, boolean touchable) {
+        Actor hitActor = super.hit(x, y, touchable);
+        if (hitActor == null) {
+            return null;
+        }
+        if (hitActor == this) {
+            return this;
+        }
+        //child hit && check if child is %100 visible (not culled)
+        tmpVector.set(hitActor.getX(), hitActor.getY());
+        tmpVector = hitActor.localToStageCoordinates(tmpVector);
+        return (tmpVector.y > getY())  ? hitActor : null;
     }
 
     private void handleDragUpBlocked() {

@@ -50,6 +50,7 @@ public class ComplextListAdapter extends ListWidgetAdapter {
         if (drawable == null) {
             TextureAtlas.AtlasRegion atlasRegion = stageBuilder.getAssets().getTextureAtlas("common.atlas").findRegion(item.getFrame());
             drawable = new TextureRegionDrawable(atlasRegion);
+            drawableCache.put(item.getFrame(), drawable);
         }
         logo.setDrawable(drawable);
     }
