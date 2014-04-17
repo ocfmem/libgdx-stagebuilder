@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 import net.peakgames.libgdx.stagebuilder.core.assets.AssetsInterface;
 import net.peakgames.libgdx.stagebuilder.core.assets.ResolutionHelper;
 import net.peakgames.libgdx.stagebuilder.core.assets.StageBuilderListener;
@@ -134,7 +136,12 @@ public class StageBuilder {
             XmlModelBuilder xmlModelBuilder = new XmlModelBuilder();
             List<BaseModel> modelList = xmlModelBuilder.buildModels(getLayoutFile(fileName));
             GroupModel groupModel = (GroupModel) modelList.get(0);
-            Stage stage = new Stage(width, height, keepAspectRatio);
+            Stage stage = null;
+            if (keepAspectRatio) {
+                stage = new Stage(new ExtendViewport(width, height));
+            } else {
+                stage = new Stage(new StretchViewport(width, height));
+            }
             Group rootGroup= new Group();
             addActorsToStage(rootGroup, groupModel.getChildren());
             rootGroup.setName(ROOT_GROUP_NAME);

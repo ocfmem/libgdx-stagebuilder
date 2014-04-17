@@ -18,7 +18,6 @@ public class StageBuilderTestActivity extends AndroidApplication {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-        config.useGL20 = true;
         config.useAccelerometer = false;
         config.useCompass = false;
 

@@ -80,7 +80,8 @@ public class SelectBoxBuilder extends ActorBuilder {
 
 
 
-        SelectBox selectBox = new SelectBox(values, style);
+        SelectBox selectBox = new SelectBox(style);
+        selectBox.setItems(values);
         selectBox.setName(selectBoxModel.getName());
 
         selectBox.setBounds(selectBoxModel.getX(), selectBoxModel.getY(), selectBoxBackground.getRegion().getRegionWidth(), selectBoxBackground.getRegion().getRegionHeight());
