@@ -4,12 +4,12 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.peakgames.libgdx</groupId>
 	<artifactId>stagebuilder</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>2.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>StageBuilder Parent</name>
 
 	<properties>
-		<gdx.version>1.0-20140127</gdx.version>
+		<gdx.version>1.0-SNAPSHOT</gdx.version>
 		<android.version>4.1.1.4</android.version>
 		<android.maven.version>3.8.1</android.maven.version>
 		<gwt.version>2.5.0</gwt.version>

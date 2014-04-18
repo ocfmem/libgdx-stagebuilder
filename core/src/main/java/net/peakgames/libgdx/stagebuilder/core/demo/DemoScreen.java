@@ -40,7 +40,7 @@ public abstract class DemoScreen extends AbstractScreen {
     public void render(float delta) {
         super.render(delta);
 
-        debugRenderer.setProjectionMatrix(camera.combined);
+        debugRenderer.setProjectionMatrix(stage.getCamera().combined);
 
         debugRenderer.begin(ShapeRenderer.ShapeType.Line);
         debugRenderer.setColor(Color.YELLOW);

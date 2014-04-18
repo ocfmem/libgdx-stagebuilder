@@ -2,11 +2,13 @@ package net.peakgames.libgdx.stagebuilder.core.widgets;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -86,7 +88,7 @@ public class ResourceMonitorWidget extends WidgetGroup implements ICustomWidget 
     private Vector2 rightBottomGraphicBound = new Vector2();
     private Vector2 graphicPointBeginning = new Vector2();
     private Vector2 graphicPointEnding = new Vector2();
-    
+
     public static class Builder{
 
     	private String atlasName = null;
@@ -175,10 +177,14 @@ public class ResourceMonitorWidget extends WidgetGroup implements ICustomWidget 
         fpsLabel.setPosition(0, javaHeapLabel.getY() + javaHeapLabel.getTextBounds().height + emptySpaceHeight);
 
         maxWidth = findMaxWidth();
-        backgroundImage = new Image( assets.getTextureAtlas(atlasName).findRegion(backgroundFrame));
-        backgroundImage.setSize(maxWidth, fpsLabel.getTextBounds().height * NORMALIZATION_COEFFICIENT + fpsLabel.getY());
-        this.setSize(backgroundImage.getWidth(), backgroundImage.getHeight());
-        this.addActor(backgroundImage);
+        if (atlasName != null) {
+            backgroundImage = new Image( assets.getTextureAtlas(atlasName).findRegion(backgroundFrame));
+            backgroundImage.setSize(maxWidth, fpsLabel.getTextBounds().height * NORMALIZATION_COEFFICIENT + fpsLabel.getY());
+            this.setSize(backgroundImage.getWidth(), backgroundImage.getHeight());
+            this.addActor(backgroundImage);
+        }  else {
+            setSize(maxWidth, fpsLabel.getTextBounds().height * NORMALIZATION_COEFFICIENT + fpsLabel.getY());
+        }
         this.addActor(fpsLabel);
         this.addActor(nativeHeapLabel);
         this.addActor(javaHeapLabel);
@@ -210,7 +216,7 @@ public class ResourceMonitorWidget extends WidgetGroup implements ICustomWidget 
         fpsList = new ArrayList<Long>(MAX_VALUES_STORED_IN_LISTS);
         intervalLabel.setPosition(0, - graphicHeight - intervalLabel.getTextBounds().height * NORMALIZATION_COEFFICIENT);
         
-        this.setPosition(0, intervalLabel.getY() * -1);
+        this.setPosition(resolutionHelper.getGameAreaPosition().x, intervalLabel.getY() * -1);
     }
 
     private void addLabelListeners() {
@@ -274,7 +280,7 @@ public class ResourceMonitorWidget extends WidgetGroup implements ICustomWidget 
 	    javaHeapLabel.setText(JAVA_HEAP_LABEL + javaHeapSize + KB);
 	    nativeHeapLabel.setText(NATIVE_HEAP_LABEL + nativeHeapSize + KB);
 	    maxWidth = findMaxWidth();
-	    if ( maxWidth != widthBefore) {
+	    if ( maxWidth != widthBefore && backgroundImage != null) {
 	        float height = backgroundImage.getHeight();
 	        setSize( maxWidth, height);
 	        backgroundImage.setSize( maxWidth, height);
@@ -293,19 +299,26 @@ public class ResourceMonitorWidget extends WidgetGroup implements ICustomWidget 
     
     @Override
     public void draw(Batch batch, float parentAlpha) {
-    	super.draw(batch, parentAlpha);
     	timeSinceLastUpdate += Gdx.graphics.getDeltaTime();
         if ( timeSinceLastUpdate >= updateIntervalInSecs){
             update();
             timeSinceLastUpdate = 0;
         }
-        
         batch.end();
-		
-		Gdx.gl.glEnable(GL10.GL_BLEND);
-		Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
-		
+
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
+        if (atlasName == null) {
+            shapeRenderer.begin(ShapeType.Filled);
+            shapeRenderer.setColor(0, 0, 0, 0.7f);
+            shapeRenderer.rect(
+                    getX(),
+                    nativeHeapLabel.getY() + getY(),
+                    getWidth(),
+                    getHeight());
+            shapeRenderer.end();
+        }
 		shapeRenderer.begin(ShapeType.Line);
 		
 		float baseY = getY() - graphicHeight;
@@ -326,10 +339,10 @@ public class ResourceMonitorWidget extends WidgetGroup implements ICustomWidget 
 		default:
 			break;
 		}
-		
 		shapeRenderer.end();
-		Gdx.gl.glDisable(GL10.GL_BLEND);
+		Gdx.gl.glDisable(GL20.GL_BLEND);
 		batch.begin();
+        super.draw(batch, parentAlpha);
         
     }
     
@@ -340,8 +353,8 @@ public class ResourceMonitorWidget extends WidgetGroup implements ICustomWidget 
 		float yInterval = graphicHeight / maxVal * (0.75f);
 		for(int i=startIndex;i<resourcesList.size() - 1;i++) {
 			xCoord+=xInterval;
-			graphicPointBeginning.set(getX() + xCoord + resolutionHelper.getGameAreaPosition().x,baseY + resourcesList.get(i) * yInterval + resolutionHelper.getGameAreaPosition().y);
-			graphicPointEnding.set(getX() + xCoord + xInterval + resolutionHelper.getGameAreaPosition().x,baseY + resourcesList.get(i + 1) * yInterval + resolutionHelper.getGameAreaPosition().y);
+			graphicPointBeginning.set(getX() + xCoord, baseY + resourcesList.get(i) * yInterval + resolutionHelper.getGameAreaPosition().y);
+			graphicPointEnding.set(getX() + xCoord + xInterval, baseY + resourcesList.get(i + 1) * yInterval + resolutionHelper.getGameAreaPosition().y);
 			shapeRenderer.line(graphicPointBeginning, graphicPointEnding);
 		}
 	}
@@ -351,10 +364,10 @@ public class ResourceMonitorWidget extends WidgetGroup implements ICustomWidget 
     	shapeRenderer.setColor(Color.YELLOW);
     	
     	float normalizedY = getY();
-    	leftTopGraphicBound.set(getX() + resolutionHelper.getGameAreaPosition().x, normalizedY + resolutionHelper.getGameAreaPosition().y);
-    	leftBottomGraphicBound.set(getX() + resolutionHelper.getGameAreaPosition().x, baseY + resolutionHelper.getGameAreaPosition().y);
-    	rightTopGraphicBound.set(getX() + resolutionHelper.getGameAreaPosition().x + maxWidth, normalizedY + resolutionHelper.getGameAreaPosition().y);
-    	rightBottomGraphicBound.set(getX() + resolutionHelper.getGameAreaPosition().x + maxWidth, baseY + resolutionHelper.getGameAreaPosition().y);
+    	leftTopGraphicBound.set(getX(), normalizedY + resolutionHelper.getGameAreaPosition().y);
+    	leftBottomGraphicBound.set(getX(), baseY + resolutionHelper.getGameAreaPosition().y);
+    	rightTopGraphicBound.set(getX() + maxWidth, normalizedY + resolutionHelper.getGameAreaPosition().y);
+    	rightBottomGraphicBound.set(getX() + maxWidth, baseY + resolutionHelper.getGameAreaPosition().y);
     	
 		shapeRenderer.line(leftTopGraphicBound, leftBottomGraphicBound);
 		shapeRenderer.line(leftBottomGraphicBound, rightBottomGraphicBound);
@@ -392,4 +405,14 @@ public class ResourceMonitorWidget extends WidgetGroup implements ICustomWidget 
 			maxFps = fps;
 		}
 	}
+
+    @Override
+    public Actor hit(float x, float y, boolean touchable) {
+        Actor hitActor = super.hit(x, y, touchable);
+        if (hitActor != null) {
+            return hitActor;
+        }
+        if ( ! this.isTouchable() ) return null;
+        return x >= getX() && x < getWidth() && y >= getY() && y < getHeight() ? this : null;
+    }
 }

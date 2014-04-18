@@ -13,8 +13,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -32,10 +30,8 @@ public abstract class AbstractScreen implements Screen {
     private static final String LANDSCAPE_SUFFIX = "_landscape";
     public final String TAG = getClass().getSimpleName();
     protected Graphics graphics;
-    protected SpriteBatch spriteBatch;
     protected Stage stage;
     protected AbstractGame game;
-    protected OrthographicCamera camera;
     private AssetManager assetManager;
     private long lastScreenRefreshCheckTimestamp = System.currentTimeMillis();
     private String layoutFileChecksum;
@@ -68,20 +64,11 @@ public abstract class AbstractScreen implements Screen {
     private void createStage(AbstractGame game) {
         float width = game.getWidth();
         float height = game.getHeight();
-        camera = new OrthographicCamera();
-        
+
         stageBuilder = new StageBuilder(game.getAssetsInterface(), game.getResolutionHelper(), game.getLocalizationService());
         stage = stageBuilder.build(getFileName(), width, height, keepAspectRatio);
 
         Gdx.input.setInputProcessor(this.stage);
-
-
-        stage.setCamera(camera);
-        this.stage.setViewport(width, height, keepAspectRatio);
-        Gdx.input.setInputProcessor(stage);
-
-        spriteBatch = (SpriteBatch)stage.getSpriteBatch();
-        spriteBatch.setProjectionMatrix(camera.combined);
     }
 
     public boolean isLandscape(){
