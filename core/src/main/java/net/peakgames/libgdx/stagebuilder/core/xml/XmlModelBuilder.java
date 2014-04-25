@@ -297,7 +297,7 @@ public class XmlModelBuilder {
         textButton.setLabelPaddingTop(XmlHelper.readFloatAttribute(xmlParser, "labelPaddingTop", 0.0f));
         textButton.setLabelPaddingBottom(XmlHelper.readFloatAttribute(xmlParser, "labelPaddingBottom", 0.0f));
         textButton.setAlignment(XmlHelper.readStringAttribute(xmlParser, "align"));
-        textButton.setWrap(XmlHelper.readBooleanAttribute(xmlParser, "align", false));
+        textButton.setWrap(XmlHelper.readBooleanAttribute(xmlParser, "wrap", false));
         textButton.setFontAutoScale(XmlHelper.readBooleanAttribute(xmlParser, "fontAutoScale", false));
     }
 
