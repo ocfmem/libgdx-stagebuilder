@@ -107,6 +107,7 @@ public class ListWidget extends WidgetGroup implements ICustomWidget, ListWidget
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
+        batch.flush();
         clipBegin(getX(), getY(), getWidth(), getHeight());
         super.draw(batch, parentAlpha);
         clipEnd();
