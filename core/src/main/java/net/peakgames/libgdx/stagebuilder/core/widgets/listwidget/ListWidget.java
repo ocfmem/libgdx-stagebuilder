@@ -5,10 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.SnapshotArray;
@@ -66,8 +63,7 @@ public class ListWidget extends WidgetGroup implements ICustomWidget, ListWidget
         public void clicked(InputEvent event, float x, float y) {
             Actor actor = event.getListenerActor();
             int position = (Integer) actor.getUserObject();
-            float dragDistance = Math.abs(actor.getY() + y - touchDownY);
-            if (onItemClickedListener != null && dragDistance <= clickCancelDragThreshold) {
+            if (onItemClickedListener != null ) {
                 onItemClickedListener.onItemClicked(listAdapter.getItem(position), actor, position);
             }
         }
@@ -97,7 +93,7 @@ public class ListWidget extends WidgetGroup implements ICustomWidget, ListWidget
         float positionMultiplier = resolutionHelper.getPositionMultiplier();
         setSize(getWidth() * positionMultiplier, getHeight() * positionMultiplier);
         clickCancelDragThreshold = clickCancelDragThreshold * positionMultiplier;
-        addListener(new ListWidgetTouchListener());
+        addCaptureListener(new ListWidgetTouchListener());
     }
 
     public void setOnItemClickListener(OnItemClickedListener listener) {
@@ -286,6 +282,11 @@ public class ListWidget extends WidgetGroup implements ICustomWidget, ListWidget
             dragDistance = lastDragPoint.y - y;
             if (Math.abs(dragDistance) > clickCancelDragThreshold) {
                 lastTouchDragTime = System.currentTimeMillis();
+                Stage stage = getStage();
+                if (stage != null) {
+                    stage.cancelTouchFocus(this, ListWidget.this);
+                }
+
             }
 
             lastDragPoint.set(x, y);
