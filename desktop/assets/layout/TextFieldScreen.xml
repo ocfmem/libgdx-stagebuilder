@@ -56,4 +56,7 @@
     			x="200"
     			y="100"/>
 
+    <label text="Demo Toggle Widget" width="800"  align="center" x="0" y="400" wrap="true" fontName="default_font.fnt" fontColor="fafad2"/>
+    <label name="toggle_status_label" text="ENABLED" width="800"  align="center" x="0" y="370" wrap="true" fontName="default_font.fnt" fontColor="fafad2"/>
+    <toggleWidget name="toggleWidget" x="320" y="300" atlas="common.atlas" buttonImageName="toggle_handle" backgroundImageName="toggle_background" />
 </group>

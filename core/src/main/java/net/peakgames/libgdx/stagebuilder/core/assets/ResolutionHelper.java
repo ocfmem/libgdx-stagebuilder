@@ -7,6 +7,8 @@ import com.badlogic.gdx.math.Vector2;
  * This class is intended to be used with Stage Builder.
  * @see net.peakgames.libgdx.stagebuilder.core.builder.StageBuilder
  */
+
+
 public class ResolutionHelper {
     private float targetAspectRatio;
     private float screenWidth;
@@ -16,7 +18,7 @@ public class ResolutionHelper {
     private float targetWidth;
     private float targetHeight;
     private float targetAssetSizeRatio;
-
+    
     /**
      * @param targetWidth  virtual width of the game area.
      * @param targetHeight virtual height of the game area.
@@ -28,6 +30,12 @@ public class ResolutionHelper {
      */
     public ResolutionHelper(float targetWidth, float targetHeight, float screenWidth, float screenHeight, float selectedResolutionWidth) {
         super();
+        resize(targetWidth,targetHeight,screenWidth,screenHeight);
+        this.targetAssetSizeRatio = gameAreaBounds.x / selectedResolutionWidth;
+
+    }
+
+    public void resize(float targetWidth, float targetHeight, float screenWidth, float screenHeight) {
         this.targetWidth = targetWidth;
         this.targetHeight = targetHeight;
         this.targetAspectRatio = targetWidth / targetHeight;
@@ -35,7 +43,6 @@ public class ResolutionHelper {
         this.screenHeight = screenHeight;
         this.gameAreaBounds = calculateGameAreaBounds(targetAspectRatio, screenWidth, screenHeight);
         this.gameAreaPosition = calculateGameAreaPosition(targetAspectRatio, screenWidth, screenHeight);
-        this.targetAssetSizeRatio = gameAreaBounds.x / selectedResolutionWidth;
     }
 
     /**
@@ -97,6 +104,20 @@ public class ResolutionHelper {
         Vector2 result = new Vector2();
         float backgroundAspectRatio = backgroundWidth / backgroundHeight;
         float screenAspectRatio = this.screenWidth / this.screenHeight;
+        float horizontalWidth = 0;
+        float verticalWidth = 0;
+        // portrait orientation
+        if(screenHeight>screenWidth){
+        	horizontalWidth = Math.min(backgroundHeight, backgroundWidth);
+        	verticalWidth = Math.max(backgroundHeight, backgroundWidth);
+        } else {
+        	// landscape orientation
+        	horizontalWidth = Math.max(backgroundHeight, backgroundWidth);
+        	verticalWidth = Math.min(backgroundHeight, backgroundWidth);
+        }
+        
+        backgroundAspectRatio = horizontalWidth / verticalWidth;
+
         if (backgroundAspectRatio > screenAspectRatio) {
             result.x = this.screenHeight * backgroundAspectRatio;
             result.y = this.screenHeight;

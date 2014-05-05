@@ -54,27 +54,29 @@ public class TextButtonBuilder extends ButtonBuilder {
         textButton.padLeft(textButtonModel.getLabelPaddingLeft() * positionMultiplier);
         Label label = textButton.getLabel();
         label.setWrap(textButtonModel.isWrap());
-        if(textButtonModel.getAlignment() != null) {
+        if (textButtonModel.getAlignment() != null) {
             int alignment = calculateAlignment(textButtonModel.getAlignment());
             label.setAlignment(alignment);
         }
         Cell labelCell = textButton.getLabelCell();
-        if(textButtonModel.isFontAutoScale()){
+        if (textButtonModel.isFontAutoScale()) {
             autoScaleTextButton(textButton);
         } else if (textButtonModel.getFontScale() != 1) {
-                labelCell.height(textButton.getHeight());
-                labelCell.bottom();
-                label.setFontScale(font.getScaleX() * textButtonModel.getFontScale());
-                label.setAlignment(Align.center);
+            labelCell.height(textButton.getHeight());
+            labelCell.bottom();
+            label.setFontScale(font.getScaleX() * textButtonModel.getFontScale());
+            label.setAlignment(Align.center);
         }
     }
 
     private void autoScaleTextButton(TextButton textButton) {
         Label label = textButton.getLabel();
         float textButtonWidth = textButton.getWidth() - textButton.getPadLeft() - textButton.getPadRight();
-        while(label.getWidth()>textButtonWidth){
-            label.setFontScale(label.getFontScaleX()*0.9f);
-            label.setWidth(label.getWidth()*0.9f);
+        float labelWidth = label.getWidth();
+        if (labelWidth > textButtonWidth) {
+            float scaleDownFactor = textButtonWidth / labelWidth;
+            label.setFontScale(label.getStyle().font.getScaleX() * scaleDownFactor);
+            label.setWidth(label.getWidth() * scaleDownFactor);
         }
     }
 }

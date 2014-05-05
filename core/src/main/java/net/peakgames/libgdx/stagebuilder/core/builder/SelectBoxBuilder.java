@@ -19,8 +19,8 @@ public class SelectBoxBuilder extends ActorBuilder {
 
     public static final Color DEFAULT_COLOR = Color.BLACK;
     public static final String DELIMITER = ";";
-    public static final int DEFAULT_PADDING_LEFT = 5;
-    public static final int DEFAULT_PADDING_RIGHT = 5;
+    public static int DEFAULT_PADDING_LEFT = 5;
+    public static int DEFAULT_PADDING_RIGHT = 5;
 
     public SelectBoxBuilder(AssetsInterface assets, ResolutionHelper resolutionHelper, LocalizationService localizationService) {
         super(assets, resolutionHelper, localizationService);
@@ -28,7 +28,13 @@ public class SelectBoxBuilder extends ActorBuilder {
 
     @Override
     public Actor build(BaseModel model) {
+        float positionMultiplier = resolutionHelper.getPositionMultiplier();
+        DEFAULT_PADDING_RIGHT = (int) (DEFAULT_PADDING_RIGHT * positionMultiplier);
+        DEFAULT_PADDING_LEFT = (int) (DEFAULT_PADDING_LEFT * positionMultiplier);
+
         SelectBoxModel selectBoxModel = (SelectBoxModel)model;
+        selectBoxModel.setPaddingLeft((int) (selectBoxModel.getPaddingLeft() * positionMultiplier));
+        selectBoxModel.setPaddingRight((int) (selectBoxModel.getPaddingRight() * positionMultiplier));
 
         TextureAtlas textureAtlas = assets.getTextureAtlas(selectBoxModel.getAtlasName());
 
@@ -42,7 +48,9 @@ public class SelectBoxBuilder extends ActorBuilder {
         TextureRegionDrawable selectBoxBackground = new TextureRegionDrawable(textureAtlas.findRegion(selectBoxModel.getSelectionBackground()));
 
         NinePatchDrawable drawable = new NinePatchDrawable();
-        NinePatch n = new NinePatch(textureAtlas.findRegion(selectBoxModel.getBackground()), 17, 17, 17, 17);
+        int patchSize = calculatePatchSize(positionMultiplier, selectBoxModel, selectBoxBackground);
+
+        NinePatch n = new NinePatch(textureAtlas.findRegion(selectBoxModel.getBackground()), patchSize, patchSize, patchSize, patchSize);
         drawable.setPatch(n);
         ScrollPane.ScrollPaneStyle scrollPaneStyle = new ScrollPane.ScrollPaneStyle(drawable, hScroll, hScrollKnob, vScroll, vScrollKnob);
 
@@ -52,21 +60,28 @@ public class SelectBoxBuilder extends ActorBuilder {
         Color fontColorUnselected = selectBoxModel.getFontColorUnselected()==null ? DEFAULT_COLOR : Color.valueOf(selectBoxModel.getFontColorUnselected());
 
         selection.setLeftWidth(selectBoxModel.getPaddingLeft()==0 ? DEFAULT_PADDING_LEFT : selectBoxModel.getPaddingLeft());
-        selection.setRightWidth(selectBoxModel.getPaddingRight()==0 ? DEFAULT_PADDING_RIGHT : selectBoxModel.getPaddingRight());
-        selection.setTopHeight(5);
-        selection.setBottomHeight(5);
+        selection.setRightWidth(selectBoxModel.getPaddingRight() == 0 ? DEFAULT_PADDING_RIGHT : selectBoxModel.getPaddingRight());
+        selection.setTopHeight(5 * positionMultiplier);
+        selection.setBottomHeight(5 * positionMultiplier);
+
+        String[] values = new String[0];
+        String filterValues =  getLocalizedString(selectBoxModel.getValue());
+        if (selectBoxModel.getValue() != null && !filterValues.isEmpty()) {
+            values = filterValues.split(DELIMITER);
+        }
+        
+        autoScaleFont(font, values, selectBoxModel.getMaxTextWidth() * positionMultiplier);
+
         com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle listStyle = new com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle(font, fontColorSelected, fontColorUnselected, selection);
 
         selectBoxBackground.setLeftWidth(selectBoxModel.getPaddingLeft());
         selectBoxBackground.setRightWidth(selectBoxModel.getPaddingRight());
         SelectBox.SelectBoxStyle style = new SelectBox.SelectBoxStyle(font, fontColor, selectBoxBackground, scrollPaneStyle, listStyle);
 
-        String[] values = new String[0];
-        if (selectBoxModel.getValue() != null && !selectBoxModel.getValue().isEmpty()) {
-            values = selectBoxModel.getValue().split(DELIMITER);
-        }
 
-        SelectBox selectBox = new SelectBox(values, style);
+
+        SelectBox selectBox = new SelectBox(style);
+        selectBox.setItems(values);
         selectBox.setName(selectBoxModel.getName());
 
         selectBox.setBounds(selectBoxModel.getX(), selectBoxModel.getY(), selectBoxBackground.getRegion().getRegionWidth(), selectBoxBackground.getRegion().getRegionHeight());
@@ -75,6 +90,39 @@ public class SelectBoxBuilder extends ActorBuilder {
         setBasicProperties(selectBoxModel, selectBox);
 
         return selectBox;
+    }
+
+    private void autoScaleFont(BitmapFont font, String[] values, float maxWidth) {
+        if (maxWidth <= 0) {
+            return;
+        }
+        float max = 0;
+        for (String value : values) {
+            float textWidth = font.getBounds(value).width;
+            if (textWidth > max) {
+                max = textWidth;
+            }
+        }
+        if (max > maxWidth) {
+            font.setScale(font.getScaleX() * (maxWidth/max));
+        }
+    }
+
+    /**
+     * TODO Bu metod icinde sadece height kontrolu yapiliyor.
+     * bottom ve top patch toplami nine-patch resminin yuksekliginden buyuk ise
+     * patch size yuksekligi gecmeyecek sekilde guncelleniyor.
+     * @param positionMultiplier
+     * @param selectBoxModel
+     * @param selectBoxBackground
+     * @return patch size
+     */
+    private int calculatePatchSize(float positionMultiplier, SelectBoxModel selectBoxModel, TextureRegionDrawable selectBoxBackground) {
+        int patchSize = (int) (positionMultiplier * selectBoxModel.getPatchSize());
+        if (patchSize > (selectBoxBackground.getMinHeight() /2f)) {
+            patchSize = (int) (selectBoxBackground.getMinHeight() /2f) - 2 ;
+        }
+        return patchSize;
     }
 
 }

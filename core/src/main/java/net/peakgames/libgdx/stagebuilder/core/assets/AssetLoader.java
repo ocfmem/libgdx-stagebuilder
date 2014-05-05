@@ -11,10 +11,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class AssetLoader {
 
@@ -24,6 +21,7 @@ public class AssetLoader {
      * Multiple asset files can be mapped to a single key.
      */
     private Map<String, List<AssetConfig>> assetsConfiguration = new HashMap<String, List<AssetConfig>>();
+    private Map<String, Set<AssetConfig>> alreadyLoadedAssets = new HashMap<String, Set<AssetConfig>>();
 
     public AssetLoader(AssetManager assetManager) {
         this.assetManager = assetManager;
@@ -59,11 +57,13 @@ public class AssetLoader {
     private void loadAssets(String screenName, LoadedCallbackManager loadedCallbackManager) {
         List<AssetConfig> list = assetsConfiguration.get(screenName);
         if (list != null) {
+            Set<AssetConfig> alreadyLoadedSet = new HashSet<AssetConfig>();
             for (AssetConfig config : list) {
                 Class<?> type = config.getType();
                 String fileName = config.getFileName();
                 loadedCallbackManager.addFile(fileName);
                 if (assetManager.isLoaded(fileName)) {
+                    alreadyLoadedSet.add(config);
                     loadedCallbackManager.finishedLoading(assetManager, fileName, type);
                 } else {
                     if (TextureAtlas.class.equals(type)) {
@@ -78,7 +78,7 @@ public class AssetLoader {
 
                     } else if (BitmapFont.class.equals(type)) {
                         BitmapFontLoader.BitmapFontParameter param = new BitmapFontLoader.BitmapFontParameter();
-                        param.maxFilter = Texture.TextureFilter.Linear;
+                        param.magFilter = Texture.TextureFilter.Linear;
                         param.minFilter = Texture.TextureFilter.Linear;
                         param.loadedCallback = loadedCallbackManager;
                         assetManager.load(fileName, BitmapFont.class, param);
@@ -93,7 +93,15 @@ public class AssetLoader {
                     }
                 }
             }
+
+            if(!alreadyLoadedSet.isEmpty()){
+                alreadyLoadedAssets.put(screenName, alreadyLoadedSet);
+            }
         }
+    }
+
+    public Map<String, List<AssetConfig>> getAssetsConfiguration(){
+        return  assetsConfiguration;
     }
 
     public AssetManager getAssetManager() {
@@ -103,9 +111,22 @@ public class AssetLoader {
     public void unloadAssets(String screenName) {
         List<AssetConfig> list = assetsConfiguration.get(screenName);
         if (list != null) {
-            for (AssetConfig config : list) {
+            Set<AssetConfig> alreadyLoadedSet = alreadyLoadedAssets.get(screenName);
+            List<AssetConfig> loadList = new ArrayList<AssetConfig>();
+            loadList.addAll(list);
+            if(alreadyLoadedSet != null){
+                removeAlreadyLoadedAssets(loadList, alreadyLoadedSet);
+                alreadyLoadedAssets.remove(screenName);
+            }
+            for (AssetConfig config : loadList) {
                 assetManager.unload(config.getFileName());
             }
+        }
+    }
+
+    private void removeAlreadyLoadedAssets(List<AssetConfig> list, Set<AssetConfig> alreadyLoadedSet) {
+        for(AssetConfig assetConfig : alreadyLoadedSet){
+            list.remove(assetConfig);
         }
     }
 
@@ -117,7 +138,7 @@ public class AssetLoader {
         this.assetsConfiguration.remove(key);
     }
 
-    private static class AssetConfig {
+    public static class AssetConfig {
         private String fileName;
         private Class<?> type;
 

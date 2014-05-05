@@ -1,11 +1,9 @@
 package net.peakgames.libgdx.stagebuilder.core.widgets;
 
-import java.util.Map;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -15,11 +13,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
-
 import net.peakgames.libgdx.stagebuilder.core.ICustomWidget;
 import net.peakgames.libgdx.stagebuilder.core.assets.AssetsInterface;
 import net.peakgames.libgdx.stagebuilder.core.assets.ResolutionHelper;
 import net.peakgames.libgdx.stagebuilder.core.services.LocalizationService;
+
+import java.util.Map;
 
 public class LoadingWidget extends WidgetGroup implements ICustomWidget{
 	
@@ -141,14 +140,14 @@ public class LoadingWidget extends WidgetGroup implements ICustomWidget{
 	}
 	
 	@Override
-	public void draw (SpriteBatch batch, float parentAlpha) {
+	public void draw (Batch batch, float parentAlpha) {
 		super.draw(batch, parentAlpha);
-		foregroundImage.rotate(5);
+		foregroundImage.rotateBy(5);
 		if(fullScreen) {
 			batch.end();
 			
-			Gdx.gl.glEnable(GL10.GL_BLEND);
-			Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+			Gdx.gl.glEnable(GL20.GL_BLEND);
+			Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 			
 			shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
 			shapeRenderer.begin(ShapeType.Filled);
@@ -156,7 +155,7 @@ public class LoadingWidget extends WidgetGroup implements ICustomWidget{
 			shapeRenderer.rect(0, 0, boundaryWidth, boundaryHeight);
 			shapeRenderer.end();
 			
-			Gdx.gl.glDisable(GL10.GL_BLEND);
+			Gdx.gl.glDisable(GL20.GL_BLEND);
 			
 			batch.begin();
 			

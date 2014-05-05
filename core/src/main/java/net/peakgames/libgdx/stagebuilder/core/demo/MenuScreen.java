@@ -5,6 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import net.peakgames.libgdx.stagebuilder.core.AbstractGame;
 import net.peakgames.libgdx.stagebuilder.core.assets.AssetLoaderListener;
+import net.peakgames.libgdx.stagebuilder.core.widgets.ResourceMonitorWidget;
 
 
 public class MenuScreen extends DemoScreen {
@@ -12,6 +13,22 @@ public class MenuScreen extends DemoScreen {
     public MenuScreen(AbstractGame game) {
         super(game);
         addButtonListeners();
+    }
+
+    @Override
+    public void show() {
+        super.show();
+        if (findActor("profiler") == null) {
+            ResourceMonitorWidget profiler = new ResourceMonitorWidget.Builder().
+                    assets(game.getAssetsInterface()).
+                    //atlasName("common.atlas").
+                    //backGroundFrame("black_square").
+                    resolutionHelper(game.getResolutionHelper()).
+                    fontName("default_font.fnt").
+                    build();
+            profiler.setName("profiler");
+            stage.addActor(profiler);
+        }
     }
 
     @Override
@@ -85,6 +102,14 @@ public class MenuScreen extends DemoScreen {
             public void clicked(InputEvent event, float x, float y) {
                 ExternalGroupScreen externalGroupScreen = new ExternalGroupScreen(game);
                 game.addScreen(externalGroupScreen);
+            }
+        });
+
+        findButton("list_widget_screen").addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ListWidgetScreen listWidgetScreen = new ListWidgetScreen(game);
+                game.addScreen(listWidgetScreen);
             }
         });
 

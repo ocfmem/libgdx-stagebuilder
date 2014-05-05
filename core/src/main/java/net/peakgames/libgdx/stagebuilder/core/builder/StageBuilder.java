@@ -4,8 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 import net.peakgames.libgdx.stagebuilder.core.assets.AssetsInterface;
 import net.peakgames.libgdx.stagebuilder.core.assets.ResolutionHelper;
+import net.peakgames.libgdx.stagebuilder.core.assets.StageBuilderListener;
 import net.peakgames.libgdx.stagebuilder.core.model.*;
 import net.peakgames.libgdx.stagebuilder.core.services.LocalizationService;
 import net.peakgames.libgdx.stagebuilder.core.xml.XmlModelBuilder;
@@ -13,6 +16,7 @@ import net.peakgames.libgdx.stagebuilder.core.xml.XmlModelBuilder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.*;
 
 public class StageBuilder {
     public static final String ROOT_GROUP_NAME = "AbsoluteLayoutRootGroup";
@@ -25,6 +29,8 @@ public class StageBuilder {
     private AssetsInterface assets;
     private ResolutionHelper resolutionHelper;
     private LocalizationService localizationService;
+    private ExecutorService groupBuildingPool;
+    private StageBuilderListener stageBuilderListener;
 
     public StageBuilder(AssetsInterface assets, ResolutionHelper resolutionHelper, LocalizationService localizationService) {
         this.assets = assets;
@@ -32,6 +38,7 @@ public class StageBuilder {
         this.localizationService = localizationService;
 
         registerWidgetBuilders(assets);
+        groupBuildingPool = Executors.newFixedThreadPool(1);
     }
 
     public void switchOrientation() {
@@ -54,7 +61,9 @@ public class StageBuilder {
         builders.put(ExternalGroupModel.class, new ExternalGroupModelBuilder(this.assets, this.resolutionHelper, this.localizationService, this));
         builders.put(SliderModel.class, new SliderBuilder( this.assets, this.resolutionHelper, this.localizationService));
         builders.put(TextFieldModel.class, new TextFieldBuilder(assets, resolutionHelper, localizationService));
+        builders.put(TextAreaModel.class, new TextAreaBuilder(assets, resolutionHelper, localizationService));
         builders.put(CheckBoxModel.class, new CheckBoxBuilder( assets, resolutionHelper, localizationService));
+        builders.put(ToggleWidgetModel.class, new ToggleWidgetBuilder( assets, resolutionHelper, localizationService));
     }
 
     public Group buildGroup(String fileName) throws Exception {
@@ -72,6 +81,48 @@ public class StageBuilder {
         return group;
     }
 
+    public void buildGroupAsync(String fileName){
+        groupBuildingPool.execute(new GroupBuildingTask(fileName));
+    }
+
+    public StageBuilderListener getStageBuilderListener() {
+        return stageBuilderListener;
+    }
+
+    public void setStageBuilderListener(StageBuilderListener stageBuilderListener) {
+        this.stageBuilderListener = stageBuilderListener;
+    }
+
+    private class GroupBuildingTask implements Runnable {
+        private String fileName;
+
+        private GroupBuildingTask(String fileName) {
+            this.fileName = fileName;
+        }
+
+        @Override
+        public void run() {
+            try {
+                Group group = buildGroup(fileName);
+                fireOnGroupBuilded(fileName, group);
+            } catch (Exception e) {
+                fireOnGroupBuildFailed(fileName, e);
+            }
+        }
+    }
+
+    private void fireOnGroupBuildFailed(String fileName, Exception e) {
+        if(stageBuilderListener != null){
+            stageBuilderListener.onGroupBuildFailed(fileName, e);
+        }
+    }
+
+    private void fireOnGroupBuilded(String fileName, Group group) {
+        if(stageBuilderListener != null){
+            stageBuilderListener.onGroupBuilded(fileName, group);
+        }
+    }
+
     private void updateGroupSizeAndPosition(Group group, GroupModel referenceModel) {
         float multiplier = resolutionHelper.getPositionMultiplier();
         group.setX(referenceModel.getX() * multiplier);
@@ -85,7 +136,12 @@ public class StageBuilder {
             XmlModelBuilder xmlModelBuilder = new XmlModelBuilder();
             List<BaseModel> modelList = xmlModelBuilder.buildModels(getLayoutFile(fileName));
             GroupModel groupModel = (GroupModel) modelList.get(0);
-            Stage stage = new Stage(width, height, keepAspectRatio);
+            Stage stage = null;
+            if (keepAspectRatio) {
+                stage = new Stage(new ExtendViewport(width, height));
+            } else {
+                stage = new Stage(new StretchViewport(width, height));
+            }
             Group rootGroup= new Group();
             addActorsToStage(rootGroup, groupModel.getChildren());
             rootGroup.setName(ROOT_GROUP_NAME);
@@ -94,15 +150,18 @@ public class StageBuilder {
             stage.addActor(rootGroup);
             return stage;
         } catch (Exception e) {
-            Gdx.app.log(TAG, "Failed to build stage.", e);
-        }
-        return null;
+            throw new RuntimeException("Failed to build stage.", e);
+       }
     }
 
     private void addActorsToStage(Group rootGroup, List<BaseModel> models) {
         for (BaseModel model : models) {
-            ActorBuilder builder = builders.get(model.getClass());
-            rootGroup.addActor(builder.build(model));
+            try {
+                ActorBuilder builder = builders.get(model.getClass());
+                rootGroup.addActor(builder.build(model));
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to build stage on actor: " + model.getName(), e);
+            }
         }
     }
 

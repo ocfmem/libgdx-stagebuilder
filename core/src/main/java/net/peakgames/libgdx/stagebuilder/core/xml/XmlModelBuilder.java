@@ -4,6 +4,7 @@ import com.badlogic.gdx.files.FileHandle;
 
 import net.peakgames.libgdx.stagebuilder.core.model.*;
 
+import net.peakgames.libgdx.stagebuilder.core.widgets.ToggleWidget;
 import org.xmlpull.v1.XmlPullParser;
 
 import java.util.LinkedList;
@@ -19,7 +20,9 @@ public class XmlModelBuilder {
     public static final String GROUP_TAG = "Group";
     public static final String SLIDER_TAG = "Slider";
     public static final String TEXT_FIELD_TAG = "TextField";
+    public static final String TEXT_AREA_TAG = "TextArea";
     public static final String CHECKBOX_TAG = "CheckBox";
+    public static final String TOGGLE_WIDGET_TAG = "ToggleWidget";
     public static final String LOCALIZED_STRING_PREFIX = "@string/";
 
     public List<BaseModel> buildModels(FileHandle fileHandle) throws Exception {
@@ -64,6 +67,8 @@ public class XmlModelBuilder {
             model = buildTextButtonModel(xmlParser);
         } else if (TEXT_FIELD_TAG.equalsIgnoreCase(tagName)) {
             model = buildTextFieldModel(xmlParser);
+        } else if (TEXT_AREA_TAG.equalsIgnoreCase(tagName)) {
+            model = buildTextAreaModel(xmlParser);
         } else if (LABEL_TAG.equalsIgnoreCase(tagName)) {
             model = buildLabelModel(xmlParser);
         } else if (SELECT_BOX_TAG.equalsIgnoreCase(tagName)) {
@@ -74,6 +79,8 @@ public class XmlModelBuilder {
             model = buildGroupModel(xmlParser);
         } else if ( CHECKBOX_TAG.equalsIgnoreCase( tagName)){
             model = buildCheckBoxModel( xmlParser);
+        } else if ( TOGGLE_WIDGET_TAG.equalsIgnoreCase(tagName)){
+            model = buildToggleWidgetModel(xmlParser);
         } else if (isCustomWidget(tagName)) {
             model = buildCustomWidget(xmlParser, tagName);
         } else{
@@ -123,6 +130,8 @@ public class XmlModelBuilder {
         image.setFrame(XmlHelper.readStringAttribute(xmlParser, "frame"));
         image.setTextureSrc(XmlHelper.readStringAttribute(xmlParser, "src"));
         image.setType(XmlHelper.readStringAttribute(xmlParser, "type"));
+        image.setNinepatch(XmlHelper.readBooleanAttribute(xmlParser, "ninepatch", false));
+        image.setNinepatchOffset(XmlHelper.readIntAttribute(xmlParser, "ninepatchOffset", 0));
         return image;
     }
 
@@ -156,6 +165,8 @@ public class XmlModelBuilder {
         selectBoxModel.setSelectionBackground(XmlHelper.readStringAttribute(xmlParser, "selectionBackground"));
         selectBoxModel.setPaddingLeft(XmlHelper.readIntAttribute(xmlParser, "paddingLeft", 1));
         selectBoxModel.setPaddingRight(XmlHelper.readIntAttribute(xmlParser, "paddingRight", 1));
+        selectBoxModel.setPatchSize(XmlHelper.readIntAttribute(xmlParser, "patchSize", 1));
+        selectBoxModel.setMaxTextWidth(XmlHelper.readIntAttribute(xmlParser, "maxTextWidth", 0));
         return selectBoxModel;
     }
 
@@ -211,7 +222,28 @@ public class XmlModelBuilder {
     	textFieldModel.setFontColor(XmlHelper.readStringAttribute(xmlParser, "fontColor"));
     	textFieldModel.setPassword(XmlHelper.readBooleanAttribute(xmlParser, "password", false));
     	textFieldModel.setPasswordChar(XmlHelper.readStringAttribute(xmlParser, "passwordChar", "*"));
+        textFieldModel.setHint(XmlHelper.readStringAttribute(xmlParser, "hint"));
+        textFieldModel.setPadding(XmlHelper.readFloatAttribute(xmlParser, "padding", 0.0f));
     	return textFieldModel;
+    }
+    private BaseModel buildTextAreaModel(XmlPullParser xmlParser) {
+        TextAreaModel textAreaModel = new TextAreaModel();
+        setBaseModelParameters(textAreaModel, xmlParser);
+        textAreaModel.setAtlasName( XmlHelper.readStringAttribute( xmlParser, "atlas"));
+        textAreaModel.setText(XmlHelper.readStringAttribute(xmlParser, "text"));
+        textAreaModel.setBackgroundImageName(XmlHelper.readStringAttribute(xmlParser, "backgroundImage"));
+        textAreaModel.setSelectionImageName(XmlHelper.readStringAttribute(xmlParser, "selectionImage"));
+        textAreaModel.setCursorImageName(XmlHelper.readStringAttribute(xmlParser, "cursorImage"));
+        textAreaModel.setBackGroundOffset(XmlHelper.readIntAttribute(xmlParser, "backgroundOffset", 0));
+        textAreaModel.setSelectionOffset(XmlHelper.readIntAttribute(xmlParser, "selectionOffset", 0));
+        textAreaModel.setCursorOffset(XmlHelper.readIntAttribute(xmlParser, "cursorOffset", 0));
+        textAreaModel.setFontName(XmlHelper.readStringAttribute(xmlParser, "fontName"));
+        textAreaModel.setFontColor(XmlHelper.readStringAttribute(xmlParser, "fontColor"));
+        textAreaModel.setPassword(XmlHelper.readBooleanAttribute(xmlParser, "password", false));
+        textAreaModel.setPasswordChar(XmlHelper.readStringAttribute(xmlParser, "passwordChar", "*"));
+        textAreaModel.setHint(XmlHelper.readStringAttribute(xmlParser, "hint"));
+        textAreaModel.setPadding(XmlHelper.readFloatAttribute(xmlParser, "padding", 0.0f));
+        return textAreaModel;
     }
 
     private BaseModel buildTextButtonModel(XmlPullParser xmlParser) {
@@ -225,10 +257,24 @@ public class XmlModelBuilder {
     private BaseModel buildCheckBoxModel( XmlPullParser xmlPullParser){
         CheckBoxModel checkBoxModel = new CheckBoxModel();
         setBaseModelParameters( checkBoxModel, xmlPullParser);
-        setButtonModelProperties( checkBoxModel, xmlPullParser);
-        setTextButtonModelProperties( checkBoxModel, xmlPullParser);
-        setCheckBoxModelProperties( checkBoxModel, xmlPullParser);
+        setButtonModelProperties(checkBoxModel, xmlPullParser);
+        setTextButtonModelProperties(checkBoxModel, xmlPullParser);
+        setCheckBoxModelProperties(checkBoxModel, xmlPullParser);
         return checkBoxModel;
+    }
+
+    private BaseModel buildToggleWidgetModel( XmlPullParser xmlPullParser){
+        ToggleWidgetModel toggleWidgetModel = new ToggleWidgetModel();
+        setBaseModelParameters(toggleWidgetModel, xmlPullParser);
+
+        toggleWidgetModel.setInitialToggle(XmlHelper.readStringAttribute(xmlPullParser, "initialToggle", "left"));
+        toggleWidgetModel.setAtlasName(XmlHelper.readStringAttribute(xmlPullParser, "atlas", null));
+        toggleWidgetModel.setButtonImageName(XmlHelper.readStringAttribute(xmlPullParser, "buttonImageName", null));
+        toggleWidgetModel.setButtonDownImageName(XmlHelper.readStringAttribute(xmlPullParser, "buttonDownImageName", null));
+        toggleWidgetModel.setBackgroundImageName(XmlHelper.readStringAttribute(xmlPullParser, "backgroundImageName", "left"));
+        toggleWidgetModel.setToggleButtonPadding(XmlHelper.readFloatAttribute(xmlPullParser, "toggleButtonPadding", 1.0f));
+
+        return toggleWidgetModel;
     }
 
     private void setCheckBoxModelProperties(CheckBoxModel checkBoxModel, XmlPullParser xmlPullParser) {

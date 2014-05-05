@@ -14,6 +14,10 @@ public class ImageModel extends BaseModel {
     private String textureSrc;
     private String type;
 
+    private boolean ninepatch;
+    private int ninepatchOffset;
+
+
     public String getAtlasName() {
         return atlasName;
     }
@@ -45,4 +49,13 @@ public class ImageModel extends BaseModel {
     public void setType(String type) {
         this.type = type;
     }
+
+    public boolean getNinepatch() {return ninepatch; }
+
+    public void setNinepatch(boolean ninepatch) { this.ninepatch = ninepatch; }
+
+    public int getNinepatchOffset() { return ninepatchOffset;  }
+
+    public void setNinepatchOffset(int ninepatchOffset) {  this.ninepatchOffset = ninepatchOffset;    }
+
 }

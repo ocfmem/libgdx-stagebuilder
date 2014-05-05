@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<group width="150" height="50">
+    <image name="bg"              width="150" height="50" atlas="common.atlas" frame="selection" />
+    <label name="list_item_label" width="150" height="50" align="center" text="" fontName="default_font.fnt" fontColor="000000"/>
+</group>

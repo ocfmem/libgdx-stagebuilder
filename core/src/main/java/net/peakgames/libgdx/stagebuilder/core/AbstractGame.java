@@ -23,10 +23,12 @@ public abstract class AbstractGame implements ApplicationListener {
     public static final int TARGET_WIDTH = 800;
     public static final int TARGET_HEIGHT = 480;
     private static final String TAG = AbstractGame.class.getSimpleName();
-    private final Screen NULL_SCREEN = new NullScreen(this);
+    private final Screen NULL_SCREEN = new NullScreen();
     final private Stack<Screen> screens = new Stack<Screen>();
     private int width;
     private int height;
+    private int targetWidth;
+    private int targetHeight;
     private List<Vector2> supportedResolutions;
     private Screen topScreen = NULL_SCREEN;
     private ResolutionHelper resolutionHelper;
@@ -38,14 +40,20 @@ public abstract class AbstractGame implements ApplicationListener {
     public abstract List<Vector2> getSupportedResolutions();
     public abstract LocalizationService getLocalizationService();
 
-    public void initialize(int width, int height) {
+    public void initialize(int width, int height, int targetWidth, int targetHeight) {
         this.width = width;
         this.height = height;
+        this.targetWidth = targetWidth;
+        this.targetHeight = targetHeight;
         this.supportedResolutions = getSupportedResolutions();
         fileHandleResolver = new StageBuilderFileHandleResolver(this.width, supportedResolutions);
-        this.resolutionHelper = new ResolutionHelper(TARGET_WIDTH, TARGET_HEIGHT, width, height, fileHandleResolver.findBestResolution().x);
+        this.resolutionHelper = new ResolutionHelper(targetWidth, targetHeight, width, height, fileHandleResolver.findBestResolution().x);
         this.assetsInterface = new Assets(fileHandleResolver, resolutionHelper);
         this.keyboardManager = new KeyboardManager(height);
+    }
+    
+    public void initialize(int width, int height) {
+    	initialize(width, height, TARGET_WIDTH, TARGET_HEIGHT);
     }
 
     @Override
@@ -60,19 +68,17 @@ public abstract class AbstractGame implements ApplicationListener {
         }
         this.width = newWidth;
         this.height = newHeight;
+        int newTargetWidth = targetWidth;
+        int newTargetHeight = targetHeight;
         fileHandleResolver = new StageBuilderFileHandleResolver(this.width, supportedResolutions);
-        float targetWidth = TARGET_WIDTH;
-        float targetHeight = TARGET_HEIGHT;
         if (this.height > this.width) {
-            targetWidth = TARGET_HEIGHT;
-            targetHeight = TARGET_WIDTH;
+            newTargetWidth = targetHeight;
+            newTargetHeight = targetWidth;
         }
-        this.resolutionHelper = new ResolutionHelper(
-                targetWidth,
-                targetHeight,
+        this.resolutionHelper.resize(newTargetWidth,
+                newTargetHeight,
                 this.width,
-                this.height,
-                this.fileHandleResolver.findBestResolution().x);
+                this.height);
         this.topScreen.resize(this.width, this.height);
     }
 
@@ -185,7 +191,7 @@ public abstract class AbstractGame implements ApplicationListener {
         try {
             return screens.peek();
         } catch (EmptyStackException e) {
-            return new NullScreen(this);
+            return new NullScreen();
         }
     }
 
@@ -216,19 +222,42 @@ public abstract class AbstractGame implements ApplicationListener {
         return this.fileHandleResolver.findBestResolution();
     }
 
-    private static class NullScreen extends AbstractScreen {
+    private static class NullScreen implements Screen {
 
-        public NullScreen(AbstractGame game) {
-            super(null);
+        @Override
+        public void render(float delta) {
+
         }
 
         @Override
-        public void unloadAssets() {
+        public void resize(int width, int height) {
+
         }
 
-		@Override
-		public void onStageReloaded() {
-		}
+        @Override
+        public void show() {
+
+        }
+
+        @Override
+        public void hide() {
+
+        }
+
+        @Override
+        public void pause() {
+
+        }
+
+        @Override
+        public void resume() {
+
+        }
+
+        @Override
+        public void dispose() {
+
+        }
     }
 
 	public KeyboardManager getKeyboardManager() {

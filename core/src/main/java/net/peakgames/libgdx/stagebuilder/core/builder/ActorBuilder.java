@@ -66,7 +66,10 @@ public abstract class ActorBuilder {
                 model.getY() * resolutionHelper.getPositionMultiplier(),
                 model.getWidth(),
                 model.getHeight());
-        
+
+        actor.setWidth(model.getWidth());
+        actor.setHeight(model.getHeight());
+
         if (model.getScale() != 1) {
             actor.setScale(model.getScale(), model.getScale());
         } else {
@@ -95,7 +98,14 @@ public abstract class ActorBuilder {
 
 
         actor.setName(model.getName());
-        Vector2 screenPos = calculateScreenPosition(model.getScreenAlignment(), model);
+        Vector2 screenPos;
+        if (model.getScreenAlignmentSupport() == null) {
+            screenPos = calculateScreenPosition(model.getScreenAlignment(), model);
+        }
+        else {
+            screenPos = calculateScreenPosition(model.getScreenAlignment(), model.getScreenAlignmentSupport(), model);
+        }
+
         if (screenPos != null) {
             actor.setPosition(screenPos.x, screenPos.y);
         }
@@ -118,6 +128,31 @@ public abstract class ActorBuilder {
                 actor.setTouchable(Touchable.enabled);
                 break;
         }
+    }
+
+    public Vector2 calculateScreenPosition(BaseModel.ScreenAlign screenAlign, BaseModel.ScreenAlign screenAlignSupport, BaseModel model) {
+        if (screenAlign == null || screenAlignSupport == null) {
+            return null;
+        }
+
+        float x = 0;
+        float y = 0;
+
+        if (screenAlign == BaseModel.ScreenAlign.top || screenAlign == BaseModel.ScreenAlign.bottom) {
+            y = calculateScreenPosition(screenAlign, model).y;
+        }
+        else {
+            x = calculateScreenPosition(screenAlign, model).x;
+        }
+
+        if (screenAlignSupport == BaseModel.ScreenAlign.top || screenAlignSupport == BaseModel.ScreenAlign.bottom) {
+            y = calculateScreenPosition(screenAlignSupport, model).y;
+        }
+        else {
+            x = calculateScreenPosition(screenAlignSupport, model).x;
+        }
+
+        return new Vector2(x, y);
     }
 
     public Vector2 calculateScreenPosition(BaseModel.ScreenAlign screenAlign, BaseModel model) {

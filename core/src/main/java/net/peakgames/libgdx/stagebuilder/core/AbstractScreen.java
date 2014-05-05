@@ -13,8 +13,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -22,20 +20,22 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import net.peakgames.libgdx.stagebuilder.core.widgets.ToggleWidget;
 
 public abstract class AbstractScreen implements Screen {
 
 	public static final long SCREEN_REFRESH_CHECK_PERIOD_MS = 1000;
     private static final boolean keepAspectRatio = true;
+    private static final String PORTRAIT_SUFFIX = "_portrait";
+    private static final String LANDSCAPE_SUFFIX = "_landscape";
     public final String TAG = getClass().getSimpleName();
     protected Graphics graphics;
-    protected SpriteBatch spriteBatch;
     protected Stage stage;
     protected AbstractGame game;
-    protected OrthographicCamera camera;
     private AssetManager assetManager;
     private long lastScreenRefreshCheckTimestamp = System.currentTimeMillis();
     private String layoutFileChecksum;
+    private boolean changesOrientation = false;
     
     /**
      * parameters map that is used to pass configuration data for screen.
@@ -44,6 +44,11 @@ public abstract class AbstractScreen implements Screen {
 	private StageBuilder stageBuilder;
 
     public AbstractScreen(AbstractGame game) {
+        this(game, false);
+    }
+
+    public AbstractScreen(AbstractGame game, boolean changesOrientation) {
+        this.changesOrientation = changesOrientation;
         if (game == null) {
             return;
         }
@@ -59,20 +64,19 @@ public abstract class AbstractScreen implements Screen {
     private void createStage(AbstractGame game) {
         float width = game.getWidth();
         float height = game.getHeight();
-        camera = new OrthographicCamera();
-        
+
         stageBuilder = new StageBuilder(game.getAssetsInterface(), game.getResolutionHelper(), game.getLocalizationService());
         stage = stageBuilder.build(getFileName(), width, height, keepAspectRatio);
 
         Gdx.input.setInputProcessor(this.stage);
+    }
 
-
-        stage.setCamera(camera);
-        this.stage.setViewport(width, height, keepAspectRatio);
-        Gdx.input.setInputProcessor(stage);
-
-        spriteBatch = stage.getSpriteBatch();
-        spriteBatch.setProjectionMatrix(camera.combined);
+    public boolean isLandscape(){
+        if(game.getWidth()>game.getHeight()){
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private String getFileName() {
@@ -128,19 +132,52 @@ public abstract class AbstractScreen implements Screen {
     public void resize(int newWidth, int newHeight) {
         Gdx.app.log(TAG, "resize " + newWidth + " x " + newHeight);
         if (isResizable()) {
+            beforeReloadStage();
             reloadStage();
+            afterReloadStage();
+            this.layoutFileChecksum = calculateLayoutFileChecksum();
         } else {
             Gdx.app.log(TAG, "Screen is not resizable.");
         }
     }
 
+    /**
+     * Subclasses should override this method if they want to load saved state or make changes after stage reload.
+     * For example when screen orientation changes.
+     */
+    public void afterReloadStage() {
+
+    }
+
+    /**
+     * Subclasses should override this method if they want to save state or make changes before stage reload.
+     * For example when screen orientation changes.
+     */
+    public void beforeReloadStage() {
+
+    }
+
+    /**
+     * Subclasses should override this method if they want to implement some logic before UI
+     * For example preparing data for UI
+     */
+    public void preShow() {}
+
+    /**
+     * Subclasses should override this method if they want to implement some logic after UI
+     * For example executing server responses immediately after UI created
+     */
+    public void postShow() {}
+
     @Override
     public void show() {
+        preShow();
         Gdx.input.setInputProcessor(this.stage);
         Gdx.app.log(TAG, "show");
         stage.getRoot().getColor().a = 0;
         stage.addAction(Actions.fadeIn(0.3f));
         layoutFileChecksum = calculateLayoutFileChecksum();
+        postShow();
     }
 
     @Override
@@ -188,6 +225,10 @@ public abstract class AbstractScreen implements Screen {
         return (TextButton) stage.getRoot().findActor(name);
     }
 
+    public ToggleWidget findToggleWidget(String name) {
+        return (ToggleWidget) stage.getRoot().findActor(name);
+    }
+
     public StageBuilder getStageBuilder() {
         return stageBuilder;
     }
@@ -205,5 +246,13 @@ public abstract class AbstractScreen implements Screen {
 
     public Group getRoot() {
         return (Group) stage.getRoot().findActor(StageBuilder.ROOT_GROUP_NAME);
+    }
+
+    public boolean isChangesOrientation() {
+        return changesOrientation;
+    }
+
+    public void setChangesOrientation(boolean changesOrientation) {
+        this.changesOrientation = changesOrientation;
     }
 }
