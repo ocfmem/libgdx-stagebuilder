@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import net.peakgames.libgdx.stagebuilder.core.assets.AssetsInterface;
 import net.peakgames.libgdx.stagebuilder.core.assets.ResolutionHelper;
@@ -40,9 +41,36 @@ public class CheckBoxBuilder extends TextButtonBuilder {
         normalizeModelSize( checkBoxModel, checkBoxOff.getMinWidth(), checkBoxOff.getMinHeight());
         setBasicProperties( checkBoxModel, checkBox);
         setTextButtonProperties( checkBoxModel, font, checkBox);
+        
+        applyTableAlignment(checkBoxModel.getAlignment(), checkBox);
 
         return checkBox;
 
+    }
+    
+    private void applyTableAlignment(String alignment, CheckBox checkBox) {
+    	if(alignment != null) {    		
+    		int numericAlignment = calculateAlignment(alignment);
+    		switch (numericAlignment) {
+    		case Align.left:
+    			checkBox.left();
+    			break;
+    		case Align.right:
+    			checkBox.right();
+    			break;
+    		case Align.center:
+    			checkBox.center();
+    			break;
+    		case Align.top:
+    			checkBox.top();
+    			break;
+    		case Align.bottom:
+    			checkBox.bottom();
+    			break;
+    		default:
+    			checkBox.center();
+    		}
+    	}
     }
 
     @Override
