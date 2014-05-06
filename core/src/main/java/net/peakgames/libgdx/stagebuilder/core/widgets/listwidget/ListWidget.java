@@ -123,6 +123,7 @@ public class ListWidget extends WidgetGroup implements ICustomWidget, ListWidget
         super.act(delta);
         if (needsLayout) {
             clearChildren();
+            allActorsVisible = true;
             int count = listAdapter.getCount();
             for (int i = 0; i < count; i++) {
                 Actor actor = addActorToListWidget(i);
