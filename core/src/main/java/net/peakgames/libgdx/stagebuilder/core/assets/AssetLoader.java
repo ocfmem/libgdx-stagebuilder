@@ -2,10 +2,8 @@ package net.peakgames.libgdx.stagebuilder.core.assets;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.assets.loaders.BitmapFontLoader;
-import com.badlogic.gdx.assets.loaders.SoundLoader;
-import com.badlogic.gdx.assets.loaders.TextureAtlasLoader;
-import com.badlogic.gdx.assets.loaders.TextureLoader;
+import com.badlogic.gdx.assets.loaders.*;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -88,6 +86,10 @@ public class AssetLoader {
                         param.loadedCallback = loadedCallbackManager;
                         assetManager.load(fileName, Sound.class, param);
 
+                    } else if (Music.class.equals(type)) {
+                        MusicLoader.MusicParameter param = new MusicLoader.MusicParameter();
+                        param.loadedCallback = loadedCallbackManager;
+                        assetManager.load(fileName, Music.class, param);
                     } else {
                         Gdx.app.log("AssetLoader", "Unrecognized asset type.");
                     }
