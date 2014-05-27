@@ -6,8 +6,10 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Assets implements AssetsInterface {
 
@@ -67,7 +69,12 @@ public class Assets implements AssetsInterface {
 
     @Override
     public void unloadAssets(String key) {
-        this.assetLoader.unloadAssets(key);
+        this.assetLoader.unloadAssets(key, Collections.EMPTY_SET);
+    }
+
+    @Override
+    public void unloadAssets(String key, Set<String> exludedSet) {
+        this.assetLoader.unloadAssets(key, exludedSet);
     }
 
     @Override

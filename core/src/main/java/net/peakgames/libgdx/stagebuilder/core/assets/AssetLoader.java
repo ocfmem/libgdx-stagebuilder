@@ -110,7 +110,7 @@ public class AssetLoader {
         return assetManager;
     }
 
-    public void unloadAssets(String screenName) {
+    public void unloadAssets(String screenName, Set<String> excludedSet) {
         List<AssetConfig> list = assetsConfiguration.get(screenName);
         if (list != null) {
             Set<AssetConfig> alreadyLoadedSet = alreadyLoadedAssets.get(screenName);
@@ -121,7 +121,11 @@ public class AssetLoader {
                 alreadyLoadedAssets.remove(screenName);
             }
             for (AssetConfig config : loadList) {
-                assetManager.unload(config.getFileName());
+                if (excludedSet.contains(config.getFileName())) {
+                    Gdx.app.log("AssetLoader", "Asset " + config.getFileName() + " will not be unloaded. (excluded)");
+                } else {
+                    assetManager.unload(config.getFileName());
+                }
             }
         }
     }
