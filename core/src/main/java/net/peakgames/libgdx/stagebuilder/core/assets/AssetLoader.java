@@ -167,4 +167,8 @@ public class AssetLoader {
             return "AssetConfig [fileName=" + fileName + ", type=" + type + "]";
         }
     }
+
+    public void resetAlreadyLoadedAssetMap() {
+        this.alreadyLoadedAssets.clear();
+    }
 }

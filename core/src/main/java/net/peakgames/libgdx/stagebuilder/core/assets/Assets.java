@@ -87,4 +87,9 @@ public class Assets implements AssetsInterface {
         return this.fileHandleResolver.findBestResolution();
     }
 
+    @Override
+    public void resetAlreadyLoadedAssetsMap() {
+         this.assetLoader.resetAlreadyLoadedAssetMap();
+    }
+
 }

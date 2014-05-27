@@ -36,4 +36,6 @@ public interface AssetsInterface {
 
     public Vector2 findBestResolution();
 
+    public void resetAlreadyLoadedAssetsMap();
+
 }
