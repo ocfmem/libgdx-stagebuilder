@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface AssetsInterface {
 
@@ -28,6 +29,8 @@ public interface AssetsInterface {
     public Map<String, List<AssetLoader.AssetConfig>> getAssetsConfiguration();
 
     public void unloadAssets(String key);
+
+    public void unloadAssets(String key, Set<String> exludedSet);
 
     public AssetManager getAssetMAnager();
 

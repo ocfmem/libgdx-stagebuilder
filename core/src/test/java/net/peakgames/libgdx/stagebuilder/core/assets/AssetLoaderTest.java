@@ -6,6 +6,7 @@ import com.badlogic.gdx.audio.Sound;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.util.Collections;
 import java.util.concurrent.CountDownLatch;
 
 import static org.junit.Assert.assertFalse;
@@ -157,7 +158,7 @@ public class AssetLoaderTest {
         assetLoader.loadAssetsSync("TestScreen");
         assertTrue(assetManager.isLoaded("sound/1.mp3"));
 
-        assetLoader.unloadAssets("TestScreen");
+        assetLoader.unloadAssets("TestScreen", Collections.EMPTY_SET);
         assertFalse(assetManager.isLoaded("sound/1.mp3"));
     }
 
