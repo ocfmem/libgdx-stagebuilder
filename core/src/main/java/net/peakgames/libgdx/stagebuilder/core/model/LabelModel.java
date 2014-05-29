@@ -16,6 +16,7 @@ public class LabelModel extends BaseModel {
      * Default shadow color is BLACK
      */
     private String shadowColor = "000000";
+    private float labelScale;
 
     public String getText() {
         return text;
@@ -84,4 +85,12 @@ public class LabelModel extends BaseModel {
     public void setFontAutoScale(boolean fontAutoScale) {this.fontAutoScale = fontAutoScale;}
 
     public boolean isFontAutoScale() {return fontAutoScale;}
+
+    public float getLabelScale() {
+        return labelScale;
+    }
+
+    public void setLabelScale(float labelScale) {
+        this.labelScale = labelScale;
+    }
 }

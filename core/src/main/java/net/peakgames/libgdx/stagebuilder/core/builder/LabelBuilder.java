@@ -1,13 +1,13 @@
 package net.peakgames.libgdx.stagebuilder.core.builder;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import net.peakgames.libgdx.stagebuilder.core.assets.AssetsInterface;
-import net.peakgames.libgdx.stagebuilder.core.assets.ResolutionHelper;
-import net.peakgames.libgdx.stagebuilder.core.model.BaseModel;
-import net.peakgames.libgdx.stagebuilder.core.model.LabelModel;
-import net.peakgames.libgdx.stagebuilder.core.services.LocalizationService;
+        import com.badlogic.gdx.graphics.Color;
+        import com.badlogic.gdx.scenes.scene2d.Actor;
+        import com.badlogic.gdx.scenes.scene2d.ui.Label;
+        import net.peakgames.libgdx.stagebuilder.core.assets.AssetsInterface;
+        import net.peakgames.libgdx.stagebuilder.core.assets.ResolutionHelper;
+        import net.peakgames.libgdx.stagebuilder.core.model.BaseModel;
+        import net.peakgames.libgdx.stagebuilder.core.model.LabelModel;
+        import net.peakgames.libgdx.stagebuilder.core.services.LocalizationService;
 
 public class LabelBuilder extends ActorBuilder {
 
@@ -33,13 +33,18 @@ public class LabelBuilder extends ActorBuilder {
             autoScaleLabel(label);
         } else if (labelModel.getFontScale() != 1) {
             label.setFontScale(label.getStyle().font.getScaleX() * labelModel.getFontScale());
+        } else if (labelModel.getLabelScale() != 0) {
+            scaleLabel(label, labelModel.getLabelScale());
         }
         return label;
     }
 
     private void autoScaleLabel(Label label) {
-        float labelTextWidth = label.getTextBounds().width;
-        float labelWidth = label.getWidth();
+        scaleLabel(label, label.getWidth());
+    }
+
+    private static void scaleLabel(Label label, float labelWidth){
+        float labelTextWidth = label.getTextBounds().width /label.getFontScaleX();
         float scaleDownFactor = labelWidth / labelTextWidth;
         if (labelTextWidth > labelWidth) {
             label.setFontScale(label.getStyle().font.getScaleX() * scaleDownFactor);
