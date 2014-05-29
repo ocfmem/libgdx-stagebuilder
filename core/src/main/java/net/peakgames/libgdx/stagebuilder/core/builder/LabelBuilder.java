@@ -34,7 +34,8 @@ public class LabelBuilder extends ActorBuilder {
         } else if (labelModel.getFontScale() != 1) {
             label.setFontScale(label.getStyle().font.getScaleX() * labelModel.getFontScale());
         } else if (labelModel.getLabelScale() != 0) {
-            scaleLabel(label, labelModel.getLabelScale());
+            float scaleLabelWidth = labelModel.getLabelScale() * resolutionHelper.getPositionMultiplier();
+            scaleLabel(label, scaleLabelWidth);
         }
         return label;
     }
