@@ -5,6 +5,9 @@ import com.badlogic.gdx.files.FileHandle;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 public class XmlHelper {
 
 	public static float readFloatAttribute(XmlPullParser parser, String attributeName, float defaultValue) {
@@ -54,13 +57,31 @@ public class XmlHelper {
 	}
 	
 	public static XmlPullParser getXmlParser(FileHandle fileHandle) {
-		try {
+        InputStream is = null;
+        try {
 			XmlPullParser parser = XmlPullParserFactory.newInstance().newPullParser();
-			parser.setInput(fileHandle.read(), null);
+            is = fileHandle.read();
+            parser.setInput(is, null);
+
 			return parser;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
-		}
-	}
-	
+		} finally {
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException e) {}
+            }
+        }
+    }
+
+    public static XmlPullParser getXmlParser(InputStream is) {
+        try {
+            XmlPullParser parser = XmlPullParserFactory.newInstance().newPullParser();
+            parser.setInput(is, null);
+            return parser;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

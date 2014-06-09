@@ -7,6 +7,7 @@ import net.peakgames.libgdx.stagebuilder.core.model.*;
 import net.peakgames.libgdx.stagebuilder.core.widgets.ToggleWidget;
 import org.xmlpull.v1.XmlPullParser;
 
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -26,8 +27,13 @@ public class XmlModelBuilder {
     public static final String LOCALIZED_STRING_PREFIX = "@string/";
 
     public List<BaseModel> buildModels(FileHandle fileHandle) throws Exception {
-        XmlPullParser xmlParser = XmlHelper.getXmlParser(fileHandle);
-        return buildModels(xmlParser);
+        InputStream is = fileHandle.read();
+        try {
+            XmlPullParser xmlParser = XmlHelper.getXmlParser(is);
+            return buildModels(xmlParser);
+        } finally {
+            is.close();
+        }
     }
 
     public List<BaseModel> buildModels(XmlPullParser xmlParser) throws Exception {
