@@ -153,6 +153,7 @@ public class XmlModelBuilder {
         label.setShadowColor(XmlHelper.readStringAttribute(xmlParser, "shadowColor"));
         label.setFontScale(XmlHelper.readFloatAttribute(xmlParser, "fontScale", 1f));
         label.setFontAutoScale(XmlHelper.readBooleanAttribute(xmlParser, "fontAutoScale", false));
+        label.setLabelScale(XmlHelper.readFloatAttribute(xmlParser, "labelScale", 0));
         return label;
     }
 
