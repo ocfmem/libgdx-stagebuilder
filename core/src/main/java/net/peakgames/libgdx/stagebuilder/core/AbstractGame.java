@@ -165,6 +165,10 @@ public abstract class AbstractGame implements ApplicationListener {
     public Screen getScreen() {
         return getTopScreen();
     }
+    
+    public void updateTopScreen() {
+    	this.topScreen = getTopScreen();
+    }
 
     public void setScreen(Screen screen) {
         if (screen == null) {
