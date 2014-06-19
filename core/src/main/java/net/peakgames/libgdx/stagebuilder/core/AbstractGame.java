@@ -149,12 +149,19 @@ public abstract class AbstractGame implements ApplicationListener {
      * Disposes top screen and shows previous screen.
      */
     public void backToPreviousScreen() {
+        backToPreviousScreen(null);
+    }
+
+    public void backToPreviousScreen(Map<String, String> parameters){
         try {
             unloadAssets();
             Screen top = screens.pop();
             top.hide();
             top.dispose();
             this.topScreen = getTopScreen();
+            if(parameters != null){
+                ((AbstractScreen)topScreen).setParameters(parameters);
+            }
             displayTopScreen();
 
         } catch (EmptyStackException e) {
