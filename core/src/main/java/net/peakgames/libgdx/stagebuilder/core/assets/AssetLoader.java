@@ -56,10 +56,13 @@ public class AssetLoader {
         List<AssetConfig> list = assetsConfiguration.get(screenName);
         if (list != null) {
             Set<AssetConfig> alreadyLoadedSet = new HashSet<AssetConfig>();
+            for(AssetConfig config : list){
+                String fileName = config.getFileName();
+                loadedCallbackManager.addFile(fileName);
+            }
             for (AssetConfig config : list) {
                 Class<?> type = config.getType();
                 String fileName = config.getFileName();
-                loadedCallbackManager.addFile(fileName);
                 if (assetManager.isLoaded(fileName)) {
                     alreadyLoadedSet.add(config);
                     loadedCallbackManager.finishedLoading(assetManager, fileName, type);
