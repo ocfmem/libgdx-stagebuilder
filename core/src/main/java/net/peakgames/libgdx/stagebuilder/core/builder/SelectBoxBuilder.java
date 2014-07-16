@@ -79,10 +79,10 @@ public class SelectBoxBuilder extends ActorBuilder {
         SelectBox.SelectBoxStyle style = new SelectBox.SelectBoxStyle(font, fontColor, selectBoxBackground, scrollPaneStyle, listStyle);
 
 
-
         SelectBox selectBox = new SelectBox(style);
         selectBox.setItems(values);
         selectBox.setName(selectBoxModel.getName());
+        selectBox.getScrollPane().setScrollingDisabled(selectBoxModel.isHorizontalScrollDisabled(), selectBoxModel.isVerticalScrollDisabled());
 
         selectBox.setBounds(selectBoxModel.getX(), selectBoxModel.getY(), selectBoxBackground.getRegion().getRegionWidth(), selectBoxBackground.getRegion().getRegionHeight());
 

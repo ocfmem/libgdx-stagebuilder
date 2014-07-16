@@ -14,6 +14,9 @@ public class SelectBoxModel extends BaseModel {
     private String selection;
     private String selectionBackground;
 
+    private boolean horizontalScrollDisabled;
+    private boolean verticalScrollDisabled;
+
     private int paddingLeft;
     private int paddingRight;
     private int patchSize;
@@ -129,5 +132,21 @@ public class SelectBoxModel extends BaseModel {
 
     public void setMaxTextWidth(int maxTextWidth) {
         this.maxTextWidth = maxTextWidth;
+    }
+
+    public boolean isVerticalScrollDisabled() {
+        return verticalScrollDisabled;
+    }
+
+    public void setVerticalScrollDisabled(boolean verticalScrollDisabled) {
+        this.verticalScrollDisabled = verticalScrollDisabled;
+    }
+
+    public boolean isHorizontalScrollDisabled() {
+        return horizontalScrollDisabled;
+    }
+
+    public void setHorizontalScrollDisabled(boolean horizontalScrollDisabled) {
+        this.horizontalScrollDisabled = horizontalScrollDisabled;
     }
 }
