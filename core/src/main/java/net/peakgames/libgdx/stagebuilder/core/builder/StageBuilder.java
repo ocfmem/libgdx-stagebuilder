@@ -1,6 +1,9 @@
 package net.peakgames.libgdx.stagebuilder.core.builder;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -211,5 +214,37 @@ public class StageBuilder {
 
     public LocalizationService getLocalizationService() {
         return localizationService;
+    }
+
+    public static void disableMultiTouch(Stage stage) {
+        InputProcessor cancelMultiTouchInputProcessor = new InputAdapter() {
+            @Override
+            public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+                if (pointer > 0) {
+                    return true;
+                }
+                return super.touchDown(screenX, screenY, pointer, button);
+            }
+
+            @Override
+            public boolean touchDragged(int screenX, int screenY, int pointer) {
+                if (pointer > 0) {
+                    return true;
+                }
+                return super.touchDragged(screenX, screenY, pointer);
+            }
+
+            @Override
+            public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+                if (pointer > 0) {
+                    return true;
+                }
+                return super.touchUp(screenX, screenY, pointer, button);
+            }
+        };
+        InputMultiplexer multiplexer = new InputMultiplexer();
+        multiplexer.addProcessor(cancelMultiTouchInputProcessor);
+        multiplexer.addProcessor(stage);
+        Gdx.input.setInputProcessor(multiplexer);
     }
 }
